@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/regular.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+  <title>
+    {{pageTitle}}
+  </title>
+</head>
+
+<body class="bg-[#3276AC]">
+	<div class="flex flex-1 justify-center items-center">
+		<div class="w-[600px] max-w-[90%] bg-white p-4">
+			<div class="mb-2 font-bold">
+				Yoyokitchen
+			</div>
+			<div class="flex flex-col item-center justify-center items-center">
+
+				<table class="w-full mt-5">
+					<tr>
+						<td valign="top" class="font-bold">Transaction Id</td>
+						<td valign="top" class="px-2">:</td>
+						<td valign="top" class="px-2">{{ transaction_id }}</td>
+					</tr>
+          <tr>
+						<td valign="top" class="font-bold">Payment Method</td>
+						<td valign="top" class="px-2">:</td>
+						<td valign="top" class="px-2">{{ payment_method }}</td>
+					</tr>
+          <tr>
+						<td valign="top" class="font-bold">Total</td>
+						<td valign="top" class="px-2">:</td>
+						<td valign="top" class="px-2">${{ total }}</td>
+					</tr>
+					<tr>
+						<td valign="top" class="font-bold">Transaction Date</td>
+						<td valign="top" class="px-2">:</td>
+						<td valign="top">{{created_at}}</td>
+					</tr>
+			</div>
+		</div>
+	</div>
+<div class="mt-4 p-2 border-b-[1px] border-t-[1px] w-full text-center" id="container-timer">
+					Return to application
+					<strong id="timer">4</strong>
+				</div>
+</body>
+<script>
+		const autocloseWeb = true
+		const status = "Success"
+		const deepLink = "http://facebook.com"
+
+		if (autocloseWeb === true) {
+			var timeout = 5;
+			var interaval = null;
+			const timer = document.getElementById("timer");
+			const containerTimer = document.getElementById("container-timer");
+
+			if (containerTimer) {
+				interaval = setInterval(() => {
+					timer.innerHTML = timeout;
+					if (timeout <= 0) {
+						clearInterval(interaval);
+
+						containerTimer.innerHTML = "Return to application...";
+						try {
+							let message = "Please close webview manually if it doesn't close"
+							if (window.ReactNativeWebView) {
+								if (status === 'pending') {
+									window.ReactNativeWebView.postMessage("CLOSING_WEBVIEW_PAYMENT_PENDING");
+								} else if (status === 'success') {
+									window.ReactNativeWebView.postMessage("CLOSING_WEBVIEW_PAYMENT_SUCCESS");
+								} else if (status === 'failed' || status === 'expired') {
+									window.ReactNativeWebView.postMessage("CLOSING_WEBVIEW_PAYMENT_FAILED");
+								} else {
+									window.ReactNativeWebView.postMessage("CLOSING_WEBVIEW");
+								}
+							}else{
+								message = "Please close the browser and return to the application"
+								// Open deepLink
+								if(deepLink) {
+									try {
+										window.location = deepLink
+									} catch (error) {}
+								}
+							}
+							setTimeout(() => {
+								containerTimer.innerHTML = message;
+							}, 1500);
+						} catch (error) {
+							containerTimer.innerHTML =
+								"Failed to return to the application, please close the webview manually to return to the application. " +
+								error.message;
+						}
+					}
+					timeout--;
+				}, 1000);
+			}
+		}
+	</script>
+</html>
