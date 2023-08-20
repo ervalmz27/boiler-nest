@@ -9,7 +9,7 @@ import { UpdateDeliveryStatusDto } from './dto/update-deliveryStatus.dto';
 import { UpdatePaymentStatusDto } from './dto/update-paymentStatus.dto';
 import { UpdateTransactionStatusDto } from './dto/update-transactionStatus.dto';
 import { TransactionProductDetail } from './entities/transactionProductDetail.entity';
-import { Member } from '../member/entities/member.entity';
+import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class TransactionsService {
@@ -19,7 +19,7 @@ export class TransactionsService {
   ) {}
 
   async findAll(payload: any) {
-    const { q, member_id, limit, status, delivery_status, payment_status } =
+    const { q, customer_id, limit, status, delivery_status, payment_status } =
       payload;
 
     const filter = {
@@ -32,8 +32,8 @@ export class TransactionsService {
       ],
     };
 
-    if (typeof member_id != 'undefined' && member_id !== null) {
-      filter['member_id'] = member_id;
+    if (typeof customer_id != 'undefined' && customer_id !== null) {
+      filter['customer_id'] = customer_id;
     }
 
     filter['order_number'] = {
@@ -77,7 +77,7 @@ export class TransactionsService {
   // - Only Show success transaction from online payment
   // - Show only transacton which have order number
   async findAllWithCriteria(payload: any) {
-    const { q, member_id, limit } = payload;
+    const { q, customer_id, limit } = payload;
 
     const pageLimit = parseInt(limit ?? '9999999999');
 
@@ -98,16 +98,16 @@ export class TransactionsService {
       where: {
         coupon_id,
       },
-      include: [{ model: Member }],
+      include: [{ model: Customer }],
       order: [['created_at', 'desc']],
     });
   }
 
   async findUserTransaction(payload: any) {
-    const { q, member_id, status } = payload;
+    const { q, customer_id, status } = payload;
 
     const filter = {
-      member_id: member_id,
+      customer_id: customer_id,
       [Op.or]: [
         {
           order_number: {

@@ -7,18 +7,11 @@ import { ProductOptionsService } from '../product/productOptions.service';
 import { TransactionProductDetailsService } from './transactionProductDetail.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '@/Helpers/contants';
-import { MembersService } from '../member/members.service';
-import { CouponsService } from '../coupons/coupons.service';
+import { CustomersService } from '../customer/customers.service';
 import { DiscountsService } from '../discounts/discounts.service';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { PaymentsService } from '../payments/payments.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { PointLogService } from '../pointLog/pointLog.service';
-import { VoucherSettingsService } from '../vouchers/voucherSettings.service';
-import { CartService } from '../cart/cart.service';
-import { MemberCouponsService } from '../member/memberCoupon.service';
-import { TransactionEventService } from './transactionEvent.service';
-import { EventTicketsService } from '../event/eventTickets.service';
 
 @Module({
   imports: [
@@ -31,20 +24,13 @@ import { EventTicketsService } from '../event/eventTickets.service';
   providers: [
     TransactionsService,
     TransactionProductDetailsService,
-    TransactionEventService,
     ProductsService,
     ProductOptionsService,
-    MembersService,
-    CouponsService,
+    CustomersService,
     DiscountsService,
     DeliveriesService,
     PaymentsService,
     NotificationsService,
-    PointLogService,
-    VoucherSettingsService,
-    CartService,
-    MemberCouponsService,
-    EventTicketsService,
     ...TransactionsProvider,
   ],
 })

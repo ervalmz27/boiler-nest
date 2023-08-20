@@ -4,11 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { MembersService } from '../member/members.service';
+import { CustomersService } from '../customer/customers.service';
 
 @Injectable()
 export class XAuthGuards implements CanActivate {
-  constructor(private readonly memberService: MembersService) {}
+  constructor(private readonly memberService: CustomersService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

@@ -10,7 +10,7 @@ export const FEED = {
 };
 
 export const MEMBER = {
-  TAG: 'Members',
+  TAG: 'Customers',
   SUMMARY: {
     GET: 'Get member list.',
     FIND_BY_ID: 'Get member By ID',
@@ -21,7 +21,7 @@ export const MEMBER = {
 };
 
 export const MEMBER_TIER = {
-  TAG: 'Member Tiers',
+  TAG: 'Customer Tiers',
   SUMMARY: {
     GET: 'Get member tier list.',
     FIND_BY_ID: 'Get member tier by ID',

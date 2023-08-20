@@ -123,81 +123,6 @@ export class ProductOptionsService {
     return underLimitProductArray;
   }
 
-  async calculateStock(payload) {
-    let total = 0;
-    const notEnoughStock = [];
-    for (const e of payload) {
-      if (e.item_type === 'PRODUCT') {
-        const option = await this.repository.findOne({
-          where: {
-            id: e.product_option_id,
-          },
-          attributes: ['id', 'quantity'],
-          raw: true,
-        });
-
-        console.log('Stock', option.quantity);
-        if (option.quantity !== -1) {
-          if (option.quantity >= 0) {
-            const stockRemaining = option.quantity - parseInt(e.qty);
-            this.logger.debug(`Stock: ${option.quantity} , Qty Buy: ${e.qty}`);
-            if (stockRemaining < 0) {
-              notEnoughStock.push({
-                product_Id: e.product_id,
-                product_option_id: e.product_option_id,
-                qty_buy: e.qty,
-                qty_stock: option.quantity,
-              });
-            }
-          } else {
-            notEnoughStock.push({
-              product_Id: e.product_id,
-              product_option_id: e.product_option_id,
-              qty_buy: e.qty,
-              qty_stock: option.quantity,
-            });
-          }
-        }
-      }
-
-      return notEnoughStock;
-    }
-  }
-
-  async calculateTotalCost(payload) {
-    let total = 0;
-    const productDetail = [];
-    for (const e of payload) {
-      if (e.item_type === 'PRODUCT') {
-        const option = await this.repository.findOne({
-          where: {
-            id: e.product_option_id,
-          },
-          include: [{ model: Product }],
-          // raw: true,
-        });
-
-        const productOption = option.dataValues;
-
-        const subtotal = productOption.selling_price * e.qty;
-        productDetail.push({
-          product_id: e.product_id,
-          product_name: productOption.product?.name || '-',
-          product_option_id: e.product_option_id,
-          price: productOption.selling_price,
-          qty: e.qty,
-          subtotal: subtotal,
-        });
-        total = total + subtotal;
-      }
-    }
-
-    return {
-      detail: productDetail,
-      total: total,
-    };
-  }
-
   async getUnderStockProductOption(productId, limit) {
     return await this.repository.findAll({
       where: {
@@ -208,17 +133,5 @@ export class ProductOptionsService {
       },
       include: [{ model: Product }],
     });
-  }
-
-  async revertStock(productOptions) {
-    for (const o of productOptions) {
-      const options = await this.repository.findOne({
-        where: {
-          id: o.product_option_id,
-        },
-      });
-      options.quantity = options.quantity + o.qty;
-      options.save();
-    }
   }
 }

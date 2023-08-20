@@ -17,10 +17,7 @@ import { LogNotificationsService } from './logNotifications.service';
 import { RESPONSES } from '@/Helpers/contants';
 import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
-import { CreateFeedDTO } from '../feeds/dto/create-feed.dto';
-import { UpdateFeedDto } from '../feeds/dto/update-feed.dto';
 import { NotificationDto } from './dto/notification.dto';
-import { MessageDetailsService } from '../messages/messageDetails.service';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -28,7 +25,6 @@ export class NotificationsController {
   constructor(
     private readonly service: NotificationsService,
     private readonly logSevice: LogNotificationsService,
-    private readonly messageDetailService: MessageDetailsService,
   ) {}
 
   @Get()
@@ -214,25 +210,6 @@ export class NotificationsController {
     });
     return res.send({
       status: true,
-    });
-  }
-
-  @Post('webhook/whatsapp')
-  async webhookWhatsapp(@Body() payload: any, @Res() res) {
-    const { id, status, timestamp } = payload;
-    const messageDetail = await this.messageDetailService.findBySenderId(
-      payload.id,
-    );
-
-    if (messageDetail) {
-      const messageDeliveryStatus = status === 'sent' ? 'SUCCESS' : status;
-      await this.messageDetailService.updateDeliveryStatus(id, {
-        last_send_at: timestamp,
-        status: messageDeliveryStatus,
-      });
-    }
-    return res.json({
-      success: true,
     });
   }
 }

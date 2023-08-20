@@ -10,7 +10,6 @@ import { Product } from './entities/product.entity';
 import { ProductOption } from './entities/productOption.entity';
 import { ProductMedia } from './entities/productMedia.entity';
 import { LogNotification } from '../notifications/entities/logNotification.entity';
-import { Event } from '../event/entities/event.entity';
 import { ProductCategory } from '../productCategory/entities/productCategory.entity';
 
 export const ProductsProvider = [

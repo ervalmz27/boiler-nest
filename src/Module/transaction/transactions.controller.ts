@@ -22,18 +22,12 @@ import { RESPONSES } from '@/Helpers/contants';
 
 import { ProductOptionsService } from '../product/productOptions.service';
 import { TransactionProductDetailsService } from './transactionProductDetail.service';
-import { TransactionEventService } from './transactionEvent.service';
 import { TransactionsService } from './transactions.service';
 import { DeliveriesService } from '../deliveries/deliveries.service';
-import { CouponsService } from '../coupons/coupons.service';
 import { PaymentsService } from '../payments/payments.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { VoucherSettingsService } from '../vouchers/voucherSettings.service';
-import { MembersService } from '../member/members.service';
-import { PointLogService } from '../pointLog/pointLog.service';
-import { CartService } from '../cart/cart.service';
+
 import { DiscountsService } from '../discounts/discounts.service';
-import { MemberCouponsService } from '../member/memberCoupon.service';
 
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { UpdateTransactionStatusDto } from './dto/update-transactionStatus.dto';
@@ -42,7 +36,6 @@ import { UpdateDeliveryStatusDto } from './dto/update-deliveryStatus.dto';
 
 import { XAuthGuards } from '../auth/xauth.guard';
 import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
-import { EventTicketsService } from '../event/eventTickets.service';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -51,20 +44,14 @@ export class TransactionsController {
   private readonly helpers = new Helpers();
   constructor(
     private readonly service: TransactionsService,
-    private readonly transactionEventService: TransactionEventService,
+    // private readonly transactionEventService: TransactionEventService,
     private readonly productOptionService: ProductOptionsService,
     private readonly deliveryService: DeliveriesService,
     private readonly customPaymentService: PaymentsService,
-    private readonly couponService: CouponsService,
+
     private readonly trxProductDetailService: TransactionProductDetailsService,
     private readonly notificationService: NotificationsService,
-    private readonly voucherSettingService: VoucherSettingsService,
-    private readonly memberService: MembersService,
-    private readonly pointLogService: PointLogService,
-    private readonly cartService: CartService,
     private readonly discountService: DiscountsService,
-    private readonly memberCouponService: MemberCouponsService,
-    private readonly eventTicketService: EventTicketsService,
   ) {}
 
   @Get()
@@ -115,7 +102,7 @@ export class TransactionsController {
     const newPayload = {
       q,
       status,
-      member_id: id,
+      customer_id: id,
     };
 
     const transactions = await this.service.findUserTransaction(newPayload);
@@ -165,38 +152,16 @@ export class TransactionsController {
     let totalDelivery = 0;
     let subtotalEvent = 0;
 
-    const emptyProductStock = await this.productOptionService.calculateStock(
-      payload.items,
-    );
-    if (emptyProductStock.length > 0) {
-      return res.status(400).json({
-        success: false,
-        data: emptyProductStock,
-        message: `Insufficient product stock`,
-      });
-    }
+    // const products = await this.productOptionService.calculateTotalCost(
+    //   payload.items,
+    // );
 
-    const emptyTicket = await this.eventTicketService.calculateStock(
-      payload.items,
-    );
-    if (emptyTicket.length > 0) {
-      return res.status(400).json({
-        success: false,
-        data: emptyTicket,
-        message: `Insufficient stock ticket`,
-      });
-    }
+    // const events = await this.transactionEventService.calculateTotalCost(
+    //   payload.items,
+    // );
 
-    const products = await this.productOptionService.calculateTotalCost(
-      payload.items,
-    );
-
-    const events = await this.transactionEventService.calculateTotalCost(
-      payload.items,
-    );
-
-    subtotalProduct = products.total;
-    subtotalEvent = events.total;
+    // subtotalProduct = products.total;
+    // subtotalEvent = events.total;
 
     let deliveryPrice = 0;
     let deliveryDetail = {
@@ -235,26 +200,6 @@ export class TransactionsController {
 
     let couponDiscount = 0;
     let couponData = {};
-    if (payload.coupon_id !== null) {
-      const resultCoupon = await this.handleCouponData({
-        coupon_id: payload.coupon_id,
-        total_product: products.total,
-      });
-
-      let couponDiscount = 0;
-      if (!resultCoupon) {
-        return this.helpers.responseJson(
-          res,
-          false,
-          null,
-          'Coupon ID not found',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      couponDiscount = resultCoupon.discount;
-      couponData = resultCoupon;
-      totalDiscount += couponDiscount;
-    }
 
     total = subtotalProduct + subtotalEvent + totalDelivery;
     total = total - totalDiscount - totalDiscountTier - totalDiscountCode;
@@ -269,7 +214,7 @@ export class TransactionsController {
     const currentTimeFormatted = moment().tz('Asia/Hong_Kong').format('LLL');
 
     const newPayload = {
-      member_id: id,
+      customer_id: id,
       order_number: generatedOrderNumber,
       contact_firstname: name,
       contact_lastname: '',
@@ -300,8 +245,8 @@ export class TransactionsController {
       selfpickup_phone: payload.selfpickup_data?.contact || null,
       selfpickup_email: payload.selfpickup_data?.email || null,
 
-      items: products.detail,
-      eventItems: events.detail,
+      // items: products.detail,
+      // eventItems: events.detail,
       status: payload.payment_status || 'PENDING',
 
       payer_answers: this.handlePayerAnswer(payload),
@@ -334,8 +279,8 @@ export class TransactionsController {
     try {
       const trx = await this.service.create(newPayload);
       const compiledDeliveryAddress = this.handleDeliveryAddress(newPayload);
-      await this.trxProductDetailService.create(trx.id, newPayload.items);
-      await this.transactionEventService.create(trx.id, newPayload.eventItems);
+      // await this.trxProductDetailService.create(trx.id, newPayload.items);
+      // await this.transactionEventService.create(trx.id, newPayload.eventItems);
 
       if (payload.payment_method === 'CUSTOM') {
         const mailPayload = {
@@ -350,7 +295,7 @@ export class TransactionsController {
           deliveryMethod: deliveryDetail.name || '',
           deliveryEmail: email,
           deliveryPhone: phone,
-          productitems: this.castToMailFormat(products.detail),
+          // productitems: this.castToMailFormat(products.detail),
           totalProduct: subtotalProduct,
           totalDiscount: totalDiscount + parseFloat(totalDiscountTier),
           totalDelivery: totalDelivery,
@@ -360,11 +305,7 @@ export class TransactionsController {
         await this.notificationService.sendAwaitingPaymentMail(mailPayload);
       }
 
-      this.addPoints(id, subtotalProduct, trx.id);
       // Mark coupon as claimed
-      if (typeof payload.member_coupon_id !== 'undefined') {
-        await this.memberCouponService.markAsUsed(payload.member_coupon_id);
-      }
 
       //  Deduct Stock
       await this.productOptionService.deductStock(payload.items);
@@ -372,7 +313,6 @@ export class TransactionsController {
       // Check availability stock and send email owner if stock under limit
       await this.checkProductAvailability(payload.items);
 
-      await this.cartService.clearCart(id, payload.items);
       return res.status(HttpStatus.OK).json({
         success: true,
         data: { transactionId: trx.id },
@@ -482,7 +422,7 @@ export class TransactionsController {
           transaction.payment_method === 'STRIPE'
             ? 'Credit Card'
             : transaction.payment_method,
-        deliveryName: transaction.delivery?.name,
+
         deliveryAddress: this.handleDeliveryAddress({
           delivery_address,
           delivery_address2,
@@ -491,7 +431,7 @@ export class TransactionsController {
           delivery_district,
           delivery_region,
         }),
-        deliveryMethod: transaction.delivery?.name,
+
         deliveryEmail: transaction.selfpickup_email,
         deliveryPhone: transaction.selfpickup_phone,
         productitems: this.castToMailFormat(
@@ -556,7 +496,7 @@ export class TransactionsController {
           transaction.payment_method === 'STRIPE'
             ? 'Credit Card'
             : transaction.payment_method,
-        deliveryName: transaction.delivery?.name,
+
         deliveryAddress: this.handleDeliveryAddress({
           delivery_address,
           delivery_address2,
@@ -566,7 +506,7 @@ export class TransactionsController {
           delivery_region,
         }),
         shippingMessage: payload.delivery_message,
-        deliveryMethod: transaction.delivery?.name,
+
         deliveryEmail: transaction.selfpickup_email,
         deliveryPhone: transaction.selfpickup_phone,
         productitems: this.castToMailFormat(
@@ -654,33 +594,6 @@ export class TransactionsController {
     }
   }
 
-  async handleCouponData({ coupon_id, total_product }) {
-    if (coupon_id) {
-      const coupon = await this.couponService.findById(coupon_id);
-      if (coupon === null) {
-        return false;
-      }
-
-      let ret = {
-        discount: 0,
-        totalProduct: 0,
-        data: coupon,
-      };
-      if (total_product < coupon.minimum_spend) {
-        return ret;
-      }
-      if (coupon.coupon_type === 'Fixed Amount') {
-        ret['discount'] = coupon.amount;
-        return ret;
-      }
-
-      if (coupon.coupon_type === 'Percentage') {
-        ret['discount'] = (coupon.amount / 100) * total_product;
-        return ret;
-      }
-    }
-  }
-
   validatePaymentStatus(paymentStatus) {
     const validStatus = ['PENDING', 'PAID', 'CANCELD', 'REFUNDED'];
     if (!validStatus.includes(paymentStatus)) return 'PENDING';
@@ -731,23 +644,6 @@ export class TransactionsController {
   }
 
   handleSendMail() {}
-
-  async addPoints(member_id, totalOrder = 0, transactionId) {
-    const voucherConfig = await this.voucherSettingService.findOne(true);
-    if (voucherConfig !== null) {
-      const { spend_amount, reward_amount } = voucherConfig;
-      if (spend_amount >= totalOrder) {
-        await this.service.addPoints(transactionId, reward_amount);
-        await this.memberService.addPoints(member_id, reward_amount);
-        await this.pointLogService.addPointLog({
-          member_id,
-          points: reward_amount,
-          transaction_id: transactionId,
-          remarks: `Transaction points`,
-        });
-      }
-    }
-  }
 
   @Post('getMonthly')
   async getMonthlyReport(@Query() q, @Res() res) {
@@ -836,74 +732,4 @@ export class TransactionsController {
       return JSON.stringify([]);
     }
   }
-
-  @Post('getEventParticipants')
-  async getEventParticipants(@Body() payload, @Res() res) {
-    const { event_id } = payload;
-    const transaction = await this.transactionEventService.getEventParticipants(
-      event_id,
-    );
-
-    return res
-      .status(transaction.length > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-      .json({
-        data: transaction,
-      });
-  }
-
-  @Post('getMemberPointLog')
-  async getMemberPointLog(@Body() payload, @Res() res) {
-    const { member_id } = payload;
-    const transaction = await this.pointLogService.getByMember(member_id);
-
-    return res
-      .status(transaction.length > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-      .json({
-        data: transaction,
-      });
-  }
-
-  @Post('addMemberPointLog')
-  async addMemberPointLog(@Body() payload, @Res() res) {
-    try {
-      const { member_id, point = 0, type = 'Add', description = '' } = payload;
-
-      const finalPoint = type === 'Deduction' ? point * -1 : point;
-      await this.memberService.addPoints(member_id, finalPoint);
-      const transaction = await this.pointLogService.addPointLog({
-        member_id,
-        transaction_id: null,
-        remarks: `${description} - Manual Adjustment (${type})`,
-        points: finalPoint,
-      });
-      return res.status(200).json({ data: transaction });
-    } catch (error) {
-      return res.status(500).json({ data: null, message: error.message });
-    }
-  }
-
-  // @Post('adjustPoints')
-  // async adjustPoints(@Res() res) {
-  //   const data = await this.memberService.get({
-  //     attributes: ['id', 'email', 'points'],
-  //   });
-  //   const ret = [];
-  //   for (const d of data) {
-  //     let totalPoints = 0;
-  //     const points = await this.pointLogService.findBy({
-  //       member_id: d.id,
-  //     });
-  //     points.map((p) => {
-  //       totalPoints += p.points;
-  //     });
-  //     // await this.memberService.updatePoints(d.id, totalPoints);
-  //     ret.push({
-  //       id: d.id,
-  //       email: d.email,
-  //       points: d.points,
-  //       points_log: totalPoints,
-  //     });
-  //   }
-  //   return res.json(ret);
-  // }
 }

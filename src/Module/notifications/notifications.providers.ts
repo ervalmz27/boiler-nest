@@ -5,7 +5,6 @@ import {
 } from '@/Helpers/contants';
 import { LogNotification } from './entities/logNotification.entity';
 import { Notifications } from './entities/notifications.entity';
-import { MessageDetails } from '../messages/entities/messageDetail.entity';
 
 export const NotificationsProvider = [
   {
@@ -15,10 +14,5 @@ export const NotificationsProvider = [
   {
     provide: LOG_NOTIFICATION_PROVIDER,
     useValue: LogNotification,
-  },
-
-  {
-    provide: MESSAGE_DETAIL_PROVIDER,
-    useValue: MessageDetails,
   },
 ];

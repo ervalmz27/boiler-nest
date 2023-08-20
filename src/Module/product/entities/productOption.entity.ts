@@ -22,11 +22,8 @@ export class ProductOption extends Model {
   @Column({ allowNull: false, type: DataType.STRING(50) })
   name: string;
 
-  @Column({ allowNull: true, type: DataType.TEXT })
-  description: string;
-
-  @Column({ allowNull: false, type: DataType.STRING(10), defaultValue: 'HKD' })
-  currency: string;
+  @Column({ allowNull: true, type: DataType.STRING(50) })
+  sku_no: string;
 
   @Column({ allowNull: false, type: DataType.INTEGER, defaultValue: 0 })
   quantity: number;

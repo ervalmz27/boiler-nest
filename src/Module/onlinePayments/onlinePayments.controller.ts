@@ -281,7 +281,7 @@ export class OnlinePaymentsController {
         orderDate: currentTimeFormatted,
         paymentMethod:
           trx.payment_method === 'STRIPE' ? 'Credit Card' : trx.payment_method,
-        deliveryName: trx.delivery?.name || '',
+        // deliveryName: trx.delivery?.name || '',
         deliveryAddress: this.handleDeliveryAddress({
           delivery_address: trx.delivery_address,
           delivery_address2: trx.delivery_address2,
@@ -290,7 +290,7 @@ export class OnlinePaymentsController {
           delivery_district: trx.delivery_district,
           delivery_region: trx.delivery_region,
         }),
-        deliveryMethod: trx.delivery?.name || '',
+        // deliveryMethod: trx.delivery?.name || '',
         deliveryEmail: trx.selfpickup_email,
         deliveryPhone: trx.selfpickup_phone,
         productitems: this.castToMailFormat(trx.products),
@@ -703,7 +703,7 @@ export class OnlinePaymentsController {
       orderDate: currentTimeFormatted,
       paymentMethod:
         trx.payment_method === 'STRIPE' ? 'Credit Card' : trx.payment_method,
-      deliveryName: trx.delivery?.name || '',
+
       deliveryAddress: this.handleDeliveryAddress({
         delivery_address: trx.delivery_address,
         delivery_address2: trx.delivery_address2,
@@ -712,7 +712,7 @@ export class OnlinePaymentsController {
         delivery_district: trx.delivery_district,
         delivery_region: trx.delivery_region,
       }),
-      deliveryMethod: trx.delivery?.name || '',
+
       deliveryEmail: trx.selfpickup_email,
       deliveryPhone: trx.selfpickup_phone,
       productitems: this.castToMailFormat(trx.products),
@@ -748,7 +748,7 @@ export class OnlinePaymentsController {
       orderDate: currentTimeFormatted,
       paymentMethod:
         trx.payment_method === 'STRIPE' ? 'Credit Card' : trx.payment_method,
-      deliveryName: trx.delivery?.name || '',
+      // deliveryName: trx.delivery?.name || '',
       deliveryAddress: this.handleDeliveryAddress({
         delivery_address: trx.delivery_address,
         delivery_address2: trx.delivery_address2,
@@ -757,7 +757,7 @@ export class OnlinePaymentsController {
         delivery_district: trx.delivery_district,
         delivery_region: trx.delivery_region,
       }),
-      deliveryMethod: trx.delivery?.name || '',
+      // deliveryMethod: trx.delivery?.name || '',
       deliveryEmail: trx.selfpickup_email,
       deliveryPhone: trx.selfpickup_phone,
       productitems: this.castToMailFormat(trx.products),

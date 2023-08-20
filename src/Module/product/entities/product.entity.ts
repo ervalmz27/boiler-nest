@@ -13,6 +13,7 @@ import {
 import { ProductMedia } from './productMedia.entity';
 import { ProductOption } from './productOption.entity';
 import { ProductCategory } from '@/Module/productCategory/entities/productCategory.entity';
+import { ProductTag } from '@/Module/productTag/entities/productTag.entity';
 
 @Table({
   tableName: 'product',
@@ -20,9 +21,6 @@ import { ProductCategory } from '@/Module/productCategory/entities/productCatego
 export class Product extends Model {
   @Column({ allowNull: false, type: DataType.STRING(50) })
   name: string;
-
-  @Column({ allowNull: true, type: DataType.STRING(50) })
-  name_zh: string;
 
   @ForeignKey(() => ProductCategory)
   @Column({ allowNull: false, type: DataType.INTEGER })
@@ -32,49 +30,34 @@ export class Product extends Model {
   category: ProductCategory;
 
   @Column({ allowNull: true, type: DataType.TEXT })
-  description: string;
+  short_description: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
-  description_zh: string;
+  description: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
   terms: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
-  terms_zh: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
   refund_policy: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  refund_policy_zh: string;
 
   @Column({ allowNull: true, type: DataType.STRING(50) })
   origins: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(50) })
-  origins_zh: string;
-
-  @Column({ allowNull: false, type: DataType.STRING(50) })
-  sku_no: string;
-
   @Column({ allowNull: false, type: DataType.INTEGER })
   stock_limit: number;
 
-  @Column({ allowNull: true, type: DataType.STRING(100) })
-  hashtags: string;
-
   @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
   status: number;
-
-  @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
-  is_published: number;
 
   @HasMany(() => ProductMedia)
   medias: ProductMedia[];
 
   @HasMany(() => ProductOption)
   options: ProductOption[];
+
+  @HasMany(() => ProductTag)
+  tags: ProductTag[];
 
   @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
   order: number;
@@ -84,7 +67,4 @@ export class Product extends Model {
 
   @UpdatedAt
   updated_at: Date;
-
-  @DeletedAt
-  deleted_at: Date;
 }

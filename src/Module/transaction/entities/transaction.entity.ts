@@ -1,4 +1,4 @@
-import { Member } from '@/Module/member/entities/member.entity';
+import { Customer } from '@/Module/customer/entities/customer.entity';
 import {
   Column,
   DataType,
@@ -13,9 +13,6 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { TransactionProductDetail } from './transactionProductDetail.entity';
-import { Delivery } from '@/Module/deliveries/entities/delivery.entity';
-import { Payment } from '@/Module/payments/entities/payment.entity';
-import { TransactionEvent } from './transactionEvent.entity';
 
 @Table({
   tableName: 'transaction',
@@ -28,12 +25,15 @@ export class Transaction extends Model {
   })
   id: string;
 
-  @ForeignKey(() => Member)
+  @ForeignKey(() => Customer)
   @Column({ allowNull: false, type: DataType.INTEGER })
-  member_id: number;
+  customer_id: number;
 
-  @BelongsTo(() => Member)
-  member: Member;
+  @BelongsTo(() => Customer)
+  member: Customer;
+
+  @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'ORDER' })
+  type: string;
 
   @Column({ allowNull: true, type: DataType.STRING })
   order_number: string;
@@ -56,15 +56,8 @@ export class Transaction extends Model {
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'HKD' })
   currency: string;
 
-  @ForeignKey(() => Payment)
-  @Column({ allowNull: true, type: DataType.STRING })
-  payment_option_id: string;
-
   @Column({ allowNull: false, type: DataType.STRING, defaultValue: 'CUSTOM' })
   payment_method: string;
-
-  @Column({ allowNull: true, type: DataType.STRING })
-  payment_identity_id: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
   payment_detail: string;
@@ -80,13 +73,6 @@ export class Transaction extends Model {
 
   @Column({ allowNull: true, type: DataType.STRING })
   recipient_phone: string;
-
-  @ForeignKey(() => Delivery)
-  @Column({ allowNull: true, type: DataType.STRING })
-  delivery_option_id: string;
-
-  @Column({ allowNull: false, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  delivery_fee: number;
 
   @Column({ allowNull: true, type: DataType.TEXT })
   delivery_address?: string;
@@ -181,21 +167,9 @@ export class Transaction extends Model {
   @HasMany(() => TransactionProductDetail)
   products: TransactionProductDetail[];
 
-  @HasMany(() => TransactionEvent)
-  events: TransactionEvent[];
-
-  @BelongsTo(() => Delivery)
-  delivery: Delivery;
-
-  @BelongsTo(() => Payment)
-  payment: Payment;
-
   @CreatedAt
   created_at: Date;
 
   @UpdatedAt
   updated_at: Date;
-
-  @DeletedAt
-  deleted_at: Date;
 }
