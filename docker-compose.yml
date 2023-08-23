@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
   prod:
     container_name: yoyo_be_prod
-    image: registry.digitalocean.com/so-thai/yoyo-api:latest
+    image: registry.digitalocean.com/so-thai/yingshun-be:latest
     # image: yoyo-be-prod:1.0.0
     env_file:
       - .env

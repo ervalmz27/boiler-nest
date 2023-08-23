@@ -24,19 +24,6 @@ export class Customer extends Model {
   last_name!: string;
 
   @Column({
-    allowNull: true,
-    type: DataType.STRING(100),
-  })
-  username?: string;
-
-  @Column({
-    field: 'country_code',
-    allowNull: true,
-    type: DataType.STRING(10),
-  })
-  country_code?: string;
-
-  @Column({
     type: DataType.STRING(100),
   })
   phone!: string;
@@ -82,9 +69,15 @@ export class Customer extends Model {
   @Column({ allowNull: true, type: DataType.TEXT })
   listing_address: string;
 
+  @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
+  status: number;
+
   @CreatedAt
   created_at: Date;
 
   @UpdatedAt
   updated_at: Date;
+
+  @DeletedAt
+  deleted_at: Date;
 }

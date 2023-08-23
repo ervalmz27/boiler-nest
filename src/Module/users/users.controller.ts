@@ -15,7 +15,6 @@ import * as bcrypt from 'bcrypt';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -65,7 +64,7 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Body() payload: CreateAdminDto, @Res() res) {
+  async create(@Body() payload, @Res() res) {
     const existingData = await this.usersService.findByEmail(payload.email);
     if (existingData) {
       return this.helpers.response(
@@ -77,7 +76,6 @@ export class UsersController {
     }
 
     payload.password = await bcrypt.hash(payload.password, 10);
-    payload.page_access = JSON.stringify(payload.page_access);
     const data = await this.usersService.create(payload);
     return this.helpers.response(
       res,
@@ -88,11 +86,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() payload: UpdateAdminDto,
-    @Res() res,
-  ) {
+  async update(@Param('id') id: number, @Body() payload: any, @Res() res) {
     const data = await this.usersService.findOne(id);
     if (data === null) {
       return this.helpers.response(

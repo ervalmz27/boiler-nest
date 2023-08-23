@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "build:docker": "docker build -t  registry.digitalocean.com/so-thai/yoyo-api . --platform linux/amd64 && docker push registry.digitalocean.com/so-thai/yoyo-api:latest",
+    "build:docker": "docker build -t  registry.digitalocean.com/so-thai/yingshun-be . --platform linux/amd64 && docker push registry.digitalocean.com/so-thai/yingshun-be:latest",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

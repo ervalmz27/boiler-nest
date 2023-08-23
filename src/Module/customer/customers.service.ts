@@ -86,34 +86,10 @@ export class CustomersService {
     return data;
   }
 
-  async findAll(payload: any): Promise<Customer[]> {
-    const { q, tier } = payload;
-    const searchKey = typeof q === 'undefined' ? '' : q;
-    const filter = {
-      [Op.or]: [
-        {
-          name: {
-            [Op.substring]: searchKey,
-          },
-        },
-        {
-          email: {
-            [Op.substring]: searchKey,
-          },
-        },
-        {
-          member_no: {
-            [Op.substring]: searchKey,
-          },
-        },
-      ],
-    };
+  async findAll(payload) {
+    const filter = {};
 
-    if (typeof tier !== 'undefined' && tier !== '') {
-      filter['tier_id'] = tier;
-    }
-
-    return await this.repository.findAll<Customer>({
+    return this.repository.findAll({
       where: filter,
       order: [['created_at', 'asc']],
     });
@@ -122,7 +98,6 @@ export class CustomersService {
   async findOne(id: number) {
     return await this.repository.findOne({
       where: { id },
-      include: { all: true, nested: true },
     });
   }
 
@@ -161,24 +136,12 @@ export class CustomersService {
   }
 
   async create(payload: any) {
-    const currentMonth = moment().tz('Asia/Hong_Kong').format('YYMM');
-    const memberNo = 'YK' + currentMonth + '0000' + (await this.getLastId());
-    payload.member_no = memberNo;
-    return await this.repository.create({ ...payload });
+    return await this.repository.create(payload);
   }
 
   async update(id: number, payload: any) {
-    return await this.repository.update(
-      { ...payload },
-      {
-        where: { id },
-      },
-    );
-  }
-
-  async updateProfileByToken(token, payload) {
     return await this.repository.update(payload, {
-      where: { token },
+      where: { id },
     });
   }
 
