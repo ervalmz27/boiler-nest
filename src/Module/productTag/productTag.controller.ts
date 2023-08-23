@@ -13,7 +13,7 @@ import {
 
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
-import { ProductTagService } from './ProductTag.service';
+import { ProductTagService } from './productTag.service';
 
 @Controller('product-tag')
 export class ProductTagController {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ProductTagService } from './ProductTag.service';
-import { ProductTagProvider } from './ProductTag.providers';
-import { ProductTagController } from './ProductTag.controller';
+import { ProductTagService } from './productTag.service';
+import { ProductTagProvider } from './productTag.providers';
+import { ProductTagController } from './productTag.controller';
 
 @Module({
   controllers: [ProductTagController],
