@@ -9,20 +9,20 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'admin',
+  tableName: 'users',
 })
-export class Admin extends Model {
+export class User extends Model {
   @Column({ allowNull: false, type: DataType.STRING(50) })
   name: string;
+
+  @Column({ allowNull: true, type: DataType.STRING(50) })
+  username: string;
 
   @Column({ allowNull: false, type: DataType.STRING(50) })
   email: string;
 
   @Column({ allowNull: false, type: DataType.STRING(100) })
   password: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  page_access: string;
 
   @CreatedAt
   created_at: Date;

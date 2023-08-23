@@ -6,11 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { DatabaseModule } from '@/Database/database.module';
-import { UsersModule } from '@/Module/users/users.module';
 
 import { PaymentsModule } from '@/Module/payments/payments.module';
 import { CustomersModule } from './Module/customer/customers.module';
-import { AdminsModule } from './Module/admin/admins.module';
+import { UsersModule } from './Module/users/users.module';
 import { OnlinePaymentsModule } from './Module/onlinePayments/onlinePayments.module';
 import { DeliveriesModule } from './Module/deliveries/deliveries.module';
 import { ContentsModule } from './Module/content/contents.module';
@@ -55,7 +54,7 @@ import { ProductTagModule } from './Module/productTag/productTag.module';
 
     PaymentsModule,
     CustomersModule,
-    AdminsModule,
+    UsersModule,
     ProductCategoryModule,
     ProductCollectionsModule,
     ProductsModule,

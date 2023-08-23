@@ -1,37 +1,56 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { USER_REPOSITORY } from '@/Helpers/contants';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Users } from './entities/user.entity';
-import { UserTier } from './entities/userTier.entity';
+import { USER_PROVIDER } from '@/Helpers/contants';
+import { User } from './entities/users.entity';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepository: typeof Users,
+    @Inject(USER_PROVIDER)
+    private readonly adminRepository: typeof User,
   ) {}
 
-  async create(userDto: CreateUserDto) {
-    return await this.userRepository.create<Users>({ ...userDto });
-  }
-
-  async findAll(): Promise<Users[]> {
-    return await this.userRepository.findAll<Users>({
-      include: [{ model: UserTier }],
-    });
-  }
-
-  async findOne(id: number) {
-    return await this.userRepository.findOne<Users>({
+  async findAll(searchKey: string): Promise<User[]> {
+    return await this.adminRepository.findAll<User>({
       where: {
-        id: id,
+        [Op.or]: [
+          {
+            name: {
+              [Op.substring]: searchKey,
+            },
+          },
+          {
+            email: {
+              [Op.substring]: searchKey,
+            },
+          },
+        ],
       },
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return await this.userRepository.update(
-      { ...updateUserDto },
+  async findOne(id: number) {
+    return await this.adminRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async findByEmail(email: string) {
+    return await this.adminRepository.findOne({
+      where: { email: email },
+      raw: true,
+    });
+  }
+
+  async create(payload) {
+    return await this.adminRepository.create<User>({ ...payload });
+  }
+
+  async update(id, payload) {
+    return await this.adminRepository.update(
+      { ...payload },
       {
         where: { id },
       },
@@ -39,6 +58,6 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} user`;
+    return await this.adminRepository.destroy({ where: { id } });
   }
 }

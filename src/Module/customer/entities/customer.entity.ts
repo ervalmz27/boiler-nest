@@ -7,24 +7,21 @@ import {
   CreatedAt,
   DeletedAt,
   UpdatedAt,
-  BelongsTo,
-  ForeignKey,
 } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'member',
+  tableName: 'customer',
 })
 export class Customer extends Model {
   @Column({
-    allowNull: true,
-    type: DataType.STRING(20),
+    type: DataType.STRING(100),
   })
-  member_no!: string;
+  first_name!: string;
 
   @Column({
     type: DataType.STRING(100),
   })
-  name!: string;
+  last_name!: string;
 
   @Column({
     allowNull: true,
@@ -59,7 +56,13 @@ export class Customer extends Model {
     allowNull: true,
     type: DataType.DATEONLY,
   })
-  dob?: string;
+  birth_date?: string;
+
+  @Column({
+    allowNull: true,
+    type: DataType.TEXT,
+  })
+  birth_place?: string;
 
   @Column({
     allowNull: true,
@@ -67,72 +70,21 @@ export class Customer extends Model {
   })
   gender: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING,
-  })
-  address?: string;
+  @Column({ allowNull: true, type: DataType.STRING })
+  bank: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATEONLY,
-  })
-  birth_date?: string;
+  @Column({ allowNull: true, type: DataType.STRING })
+  bank_account_number: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  photo?: string;
+  @Column({ allowNull: true, type: DataType.TEXT })
+  default_address: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  delivery_address?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  delivery_address2?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  delivery_address3?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  delivery_address4?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(200),
-  })
-  delivery_district?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(200),
-  })
-  delivery_region?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.TEXT,
-  })
-  token?: string;
+  @Column({ allowNull: true, type: DataType.TEXT })
+  listing_address: string;
 
   @CreatedAt
   created_at: Date;
 
   @UpdatedAt
   updated_at: Date;
-
-  @DeletedAt
-  deleted_at: Date;
 }

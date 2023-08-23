@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 
 import { ApiOperation } from '@nestjs/swagger';
-import { CONTENT } from '@/Helpers/contants/documentation';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { ContentsService } from './contents.service';
@@ -21,18 +20,14 @@ export class ContentsController {
   constructor(private readonly service: ContentsService) {}
 
   @Get()
-  @ApiOperation({
-    summary: CONTENT.SUMMARY.GET,
-    tags: [CONTENT.TAG],
-  })
   async findAll(@Res() res) {
-    const user = await this.service.findAll();
-    if (user.length < 1) {
+    const data = await this.service.findAll();
+    if (data.length < 1) {
       return this.helpers.response(
         res,
         HttpStatus.NOT_FOUND,
         RESPONSES.DATA_NOTFOUND,
-        user,
+        data,
       );
     }
 
@@ -40,11 +35,10 @@ export class ContentsController {
       res,
       HttpStatus.OK,
       RESPONSES.DATA_FOUND,
-      user,
+      data,
     );
   }
 
-  @ApiOperation({ summary: CONTENT.SUMMARY.FIND_BYTYPE, tags: [CONTENT.TAG] })
   @Get(':type')
   async findOne(@Param('type') type: string, @Res() res) {
     const data = await this.service.findByType(type);
@@ -65,7 +59,6 @@ export class ContentsController {
     );
   }
 
-  @ApiOperation({ summary: CONTENT.SUMMARY.UPDATE, tags: [CONTENT.TAG] })
   @Put(':type')
   async update(
     @Param('type') type: string,

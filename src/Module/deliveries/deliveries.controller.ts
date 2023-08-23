@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 
 import { ApiOperation } from '@nestjs/swagger';
-import { DELIVERY } from '@/Helpers/contants/documentation';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { DeliveriesService } from './deliveries.service';
@@ -73,7 +72,6 @@ export class DeliveriesController {
     );
   }
 
-  @ApiOperation({ summary: DELIVERY.SUMMARY.FIND_BY_ID, tags: [DELIVERY.TAG] })
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
     const admin = await this.service.findOne(+id);
@@ -95,7 +93,6 @@ export class DeliveriesController {
   }
 
   @Post()
-  @ApiOperation({ summary: DELIVERY.SUMMARY.CREATE, tags: [DELIVERY.TAG] })
   async create(@Body() payload: CreateDeliveryDto, @Res() res) {
     const data = await this.service.create(payload);
     return this.helpers.response(
@@ -106,7 +103,6 @@ export class DeliveriesController {
     );
   }
 
-  @ApiOperation({ summary: DELIVERY.SUMMARY.UPDATE, tags: [DELIVERY.TAG] })
   @Put(':id')
   async update(
     @Param('id') id: number,
@@ -133,7 +129,6 @@ export class DeliveriesController {
     );
   }
 
-  @ApiOperation({ summary: DELIVERY.SUMMARY.DELETE, tags: [DELIVERY.TAG] })
   @Delete(':id')
   async remove(@Param('id') id: number, @Res() res) {
     const removeData = await this.service.remove(+id);

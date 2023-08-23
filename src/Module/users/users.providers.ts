@@ -1,9 +1,9 @@
-import { USER_REPOSITORY } from '@/Helpers/contants';
-import { Users } from './entities/user.entity';
+import { USER_PROVIDER } from '@/Helpers/contants';
+import { User } from './entities/users.entity';
 
-export const usersProviders = [
+export const UsersProvider = [
   {
-    provide: USER_REPOSITORY,
-    useValue: Users,
+    provide: USER_PROVIDER,
+    useValue: User,
   },
 ];

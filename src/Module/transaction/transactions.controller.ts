@@ -489,7 +489,7 @@ export class TransactionsController {
     if (payload.delivery_status === 'SHIPPED') {
       const mailPayload = {
         email: transaction.contact_email,
-        customerName: transaction.member.name,
+        // customerName: transaction.member.name,
         orderNumber: transaction.order_number,
         orderDate: moment(transaction.createdAt).format('LLL'),
         paymentMethod:

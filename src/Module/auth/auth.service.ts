@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { AdminsService } from '../admin/admins.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private adminService: AdminsService,
+    private service: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
   async signIn(email, password) {
-    const userDetail = await this.adminService.findByEmail(email);
+    const userDetail = await this.service.findByEmail(email);
 
     if (userDetail === null) {
       return false;
@@ -41,10 +41,10 @@ export class AuthService {
   }
 
   async getProfile(email) {
-    return await this.adminService.findByEmail(email);
+    return await this.service.findByEmail(email);
   }
 
   async updateProfile(id, payload) {
-    return await this.adminService.update(id, payload);
+    return await this.service.update(id, payload);
   }
 }

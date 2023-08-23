@@ -11,8 +11,6 @@ import {
   Req,
 } from '@nestjs/common';
 
-import { ApiOperation } from '@nestjs/swagger';
-import { DISCOUNT } from '@/Helpers/contants/documentation';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { DiscountsService } from './discounts.service';

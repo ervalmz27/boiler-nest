@@ -25,7 +25,6 @@ import { NotificationsService } from '../notifications/notifications.service';
 
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
-import { MEMBER } from '@/Helpers/contants/documentation';
 import SpaceFile from '@/Helpers/files';
 import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
@@ -148,18 +147,18 @@ export class CustomersController {
     @Res() res,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const member = await this.service.findOne(id);
-    if (member === null) {
+    const data = await this.service.findOne(id);
+    if (data === null) {
       return this.helpers.response(
         res,
         HttpStatus.NOT_FOUND,
         RESPONSES.DATA_NOTFOUND,
-        MEMBER,
+        data,
       );
     }
 
     const memberByEmail = await this.service.findByEmail(payload.email);
-    if (memberByEmail !== null && memberByEmail.email !== member.email) {
+    if (memberByEmail !== null && memberByEmail.email !== data.email) {
       return this.helpers.response(
         res,
         HttpStatus.BAD_REQUEST,

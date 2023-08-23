@@ -1,10 +1,9 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from './database.config';
 import { DEVELOPMENT, PRODUCTION, SEQUELIZE, TEST } from '@/Helpers/contants';
-import { Users } from '@/Module/users/entities/user.entity';
 import { Payment } from '@/Module/payments/entities/payment.entity';
 import { Customer } from '@/Module/customer/entities/customer.entity';
-import { Admin } from '@/Module/admin/entities/admin.entity';
+import { User } from '@/Module/users/entities/users.entity';
 import { ProductCollection } from '@/Module/productCollection/entities/productCollection.entity';
 import { Product } from '@/Module/product/entities/product.entity';
 import { ProductCategory } from '@/Module/productCategory/entities/productCategory.entity';
@@ -45,10 +44,9 @@ export const databaseProviders = [
       const sequelize = new Sequelize(config);
 
       sequelize.addModels([
-        Users,
+        User,
         Payment,
         Customer,
-        Admin,
         OnlinePayment,
         Delivery,
         Content,

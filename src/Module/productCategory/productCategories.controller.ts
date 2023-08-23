@@ -11,8 +11,6 @@ import {
   Put,
 } from '@nestjs/common';
 
-import { ApiOperation } from '@nestjs/swagger';
-import { MEMBER_TIER } from '@/Helpers/contants/documentation';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { ProductCategoriesService } from './productCategories.service';
@@ -25,10 +23,6 @@ export class ProductCategoriesController {
   constructor(private readonly service: ProductCategoriesService) {}
 
   @Get()
-  @ApiOperation({
-    summary: MEMBER_TIER.SUMMARY.GET,
-    tags: [MEMBER_TIER.TAG],
-  })
   async findAll(@Res() res, @Req() req) {
     const payload = req.query;
     const data = await this.service.findAll(payload);
@@ -49,10 +43,6 @@ export class ProductCategoriesController {
     );
   }
 
-  @ApiOperation({
-    summary: MEMBER_TIER.SUMMARY.FIND_BY_ID,
-    tags: [MEMBER_TIER.TAG],
-  })
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
     const admin = await this.service.findOne(+id);
@@ -74,10 +64,6 @@ export class ProductCategoriesController {
   }
 
   @Post()
-  @ApiOperation({
-    summary: MEMBER_TIER.SUMMARY.CREATE,
-    tags: [MEMBER_TIER.TAG],
-  })
   async create(@Body() payload: CreateProductCategoryDto, @Res() res) {
     const data = await this.service.create(payload);
 
@@ -89,10 +75,6 @@ export class ProductCategoriesController {
     );
   }
 
-  @ApiOperation({
-    summary: MEMBER_TIER.SUMMARY.UPDATE,
-    tags: [MEMBER_TIER.TAG],
-  })
   @Put(':id')
   async update(
     @Param('id') id: number,
@@ -119,10 +101,6 @@ export class ProductCategoriesController {
     );
   }
 
-  @ApiOperation({
-    summary: MEMBER_TIER.SUMMARY.DELETE,
-    tags: [MEMBER_TIER.TAG],
-  })
   @Delete(':id')
   async remove(@Param('id') id: number, @Res() res) {
     const removeData = await this.service.remove(+id);
