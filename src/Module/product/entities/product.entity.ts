@@ -30,19 +30,13 @@ export class Product extends Model {
   category: ProductCategory;
 
   @Column({ allowNull: true, type: DataType.TEXT })
+  video: string;
+
+  @Column({ allowNull: true, type: DataType.TEXT })
   short_description: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
   description: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  terms: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  refund_policy: string;
-
-  @Column({ allowNull: true, type: DataType.STRING(50) })
-  origins: string;
 
   @Column({ allowNull: false, type: DataType.INTEGER })
   stock_limit: number;

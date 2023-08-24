@@ -91,12 +91,7 @@ export class CustomersController {
   async update(@Param('id') id: number, @Body() payload, @Res() res) {
     const data = await this.service.findOne(id);
     if (data === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        data,
-      );
+      return res.status(404).json({ data, message: 'Data not found' });
     }
 
     await this.service.update(+id, payload);

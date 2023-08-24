@@ -29,8 +29,50 @@ export class ProductOptionsService {
       },
     });
   }
+
+  //
   async create(payload: any) {
     return await this.repository.create(payload);
+  }
+
+  //
+  async createOrUpdate(id, payload) {
+    for (const option of payload) {
+      if (option.id !== null) {
+        await this.repository.update(
+          {
+            product_id: option.product_id,
+            name: option.name,
+            sku_no: option.sku_no,
+            quantity: option.quantity,
+            list_price: option.list_price,
+            selling_price: option.selling_price,
+            weight: option.weight,
+            weight_unit: option.weight_unit,
+          },
+          { where: { id: option.id } },
+        );
+      } else {
+        await this.repository.create({
+          product_id: id,
+          name: option.name,
+          sku_no: option.sku_no,
+          quantity: option.quantity,
+          list_price: option.list_price,
+          selling_price: option.selling_price,
+          weight: option.weight,
+          weight_unit: option.weight_unit,
+        });
+      }
+    }
+  }
+
+  async removeOptions(optionList) {
+    for (const option of optionList) {
+      await this.repository.destroy({
+        where: { id: option },
+      });
+    }
   }
 
   async import(payload: any) {

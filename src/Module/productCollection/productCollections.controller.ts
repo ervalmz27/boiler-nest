@@ -43,60 +43,37 @@ export class ProductCollectionsController {
     const payload = req.query;
     const data = await this.service.findAll(payload);
     if (data.length < 1) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        data,
-      );
+      return res.status(404).json({ data, message: 'Data not found' });
     }
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      data,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
-    const admin = await this.service.findOne(+id);
-    if (admin === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        null,
-      );
+    const data = await this.service.findOne(+id);
+    if (data === null) {
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
     }
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      admin,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   @Get(':id/products')
   async findProduct(@Param('id') id: number, @Res() res) {
     const collectionitems = await this.itemService.findByCollection(+id);
-    const returndata = [];
+    const data = [];
     for (const collection of collectionitems) {
-      returndata.push({
+      data.push({
         id: collection.id,
         product_collection_id: collection.product_collection_id,
         product_id: collection.product_id,
         product: await this.productService.findOne(collection.product_id),
       });
     }
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      returndata,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   @Post()
@@ -116,6 +93,8 @@ export class ProductCollectionsController {
         'product-collections',
         file.mimetype,
       );
+
+      console.log(fileObject);
 
       if (fileObject) {
         payload['image'] = fileObject.Location;

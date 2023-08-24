@@ -47,12 +47,9 @@ export class UsersController {
   async findOne(@Param('id') id: number, @Res() res) {
     const admin = await this.usersService.findOne(+id);
     if (admin === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        null,
-      );
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
     }
 
     return this.helpers.response(
@@ -89,12 +86,7 @@ export class UsersController {
   async update(@Param('id') id: number, @Body() payload: any, @Res() res) {
     const data = await this.usersService.findOne(id);
     if (data === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        data,
-      );
+      return res.status(404).json({ data, message: 'Data not found' });
     }
 
     if (typeof payload.password !== 'undefined') {

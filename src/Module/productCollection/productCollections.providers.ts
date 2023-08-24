@@ -2,10 +2,12 @@ import {
   PRODUCT_COLLECTION_ITEM_PROVIDER,
   PRODUCT_COLLECTION_PROVIDER,
   PRODUCT_PROVIDER,
+  PRODUCT_TAG_PROVIDER,
 } from '@/Helpers/contants';
 import { ProductCollection } from './entities/productCollection.entity';
 import { ProductCollectionItem } from './entities/productCollectionItem.entity';
 import { Product } from '../product/entities/product.entity';
+import { ProductTag } from '../productTag/entities/productTag.entity';
 
 export const ProductCollectionsProvider = [
   {
@@ -19,5 +21,9 @@ export const ProductCollectionsProvider = [
   {
     provide: PRODUCT_PROVIDER,
     useValue: Product,
+  },
+  {
+    provide: PRODUCT_TAG_PROVIDER,
+    useValue: ProductTag,
   },
 ];

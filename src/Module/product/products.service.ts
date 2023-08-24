@@ -7,6 +7,7 @@ import { v1 as uuidv1 } from 'uuid';
 import { ProductMedia } from './entities/productMedia.entity';
 import { ProductOption } from './entities/productOption.entity';
 import { ProductCategory } from '../productCategory/entities/productCategory.entity';
+import { ProductTag } from '../productTag/entities/productTag.entity';
 @Injectable()
 export class ProductsService {
   private spacefile = new SpaceFile();
@@ -76,6 +77,9 @@ export class ProductsService {
         },
         {
           model: ProductOption,
+        },
+        {
+          model: ProductTag,
         },
       ],
     });
@@ -151,12 +155,9 @@ export class ProductsService {
   }
 
   async update(id: number, payload: any) {
-    return await this.repository.update(
-      { ...payload },
-      {
-        where: { id },
-      },
-    );
+    return await this.repository.update(payload, {
+      where: { id },
+    });
   }
 
   async remove(id: number) {

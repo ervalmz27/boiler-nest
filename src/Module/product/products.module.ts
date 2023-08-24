@@ -6,6 +6,7 @@ import { ProductOptionsService } from './productOptions.service';
 import { ProductMediasService } from './productMedias.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
+import { ProductTagService } from '../productTag/productTag.service';
 
 @Module({
   controllers: [ProductsController],
@@ -15,6 +16,7 @@ import { ProductCategoriesService } from '../productCategory/productCategories.s
     ProductMediasService,
     ProductCategoriesService,
     NotificationsService,
+    ProductTagService,
     ...ProductsProvider,
   ],
 })

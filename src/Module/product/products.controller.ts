@@ -27,6 +27,7 @@ import { ProductOptionsService } from './productOptions.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
 import { allowRunningCron } from '@/Config/generic.config';
+import { ProductTagService } from '../productTag/productTag.service';
 
 @Controller('products')
 export class ProductsController {
@@ -39,6 +40,7 @@ export class ProductsController {
     private readonly optionService: ProductOptionsService,
     private readonly categoryService: ProductCategoriesService,
     private readonly notificationService: NotificationsService,
+    private readonly tagService: ProductTagService,
   ) {}
 
   @Get()
@@ -65,63 +67,21 @@ export class ProductsController {
 
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
-    const product = await this.service.findOne(+id);
-    if (product === null) {
-      return this.helpers.responseJson(
-        res,
-        true,
-        null,
-        'Product not found',
-        404,
-      );
-    }
-
-    return this.helpers.responseJson(
-      res,
-      true,
-      product,
-      'Product data found',
-      200,
-    );
+    const data = await this.service.findOne(+id);
+    if (data === null)
+      return res.status(404).json({ data, message: 'Data not found' });
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
+  //
   @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'photos', maxCount: 10 },
-      { name: 'video', maxCount: 1 },
-    ]),
-  )
-  async create(
-    @Body() payload: CreateProductDto,
-    @Res() res,
-    @UploadedFiles()
-    files: {
-      photos?: Express.Multer.File[];
-      video?: Express.Multer.File;
-    },
-  ) {
+  async create(@Body() payload: any, @Res() res) {
     const data = await this.service.create(payload);
 
-    if (typeof files.photos !== 'undefined') {
-      const photos = await this.service.uploadFiles(files.photos);
-      await this.mediaService.create(data.id, photos, 'image');
-    }
+    await this.optionService.bulkCreate(data.id, payload.options);
+    await this.tagService.bulkCreate(data.id, payload.tags);
 
-    if (typeof files.video !== 'undefined') {
-      const videos = await this.service.uploadFiles(files.video);
-      await this.mediaService.create(data.id, videos, 'video');
-    }
-
-    const productOptions = JSON.parse(payload.options);
-    await this.optionService.bulkCreate(data.id, productOptions);
-
-    return this.helpers.response(
-      res,
-      HttpStatus.CREATED,
-      RESPONSES.DATA_CREATED,
-      data,
-    );
+    return res.status(200).json({ data, message: 'Data Created' });
   }
 
   @Post('/sortProduct')
@@ -167,57 +127,25 @@ export class ProductsController {
     );
   }
 
+  //
   @Put(':id')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'photos', maxCount: 10 },
-      { name: 'video', maxCount: 1 },
-    ]),
-  )
-  async update(
-    @Param('id') id: number,
-    @Body() payload: any,
-    @Res() res,
-    @UploadedFiles()
-    files: {
-      photos?: Express.Multer.File[];
-      video?: Express.Multer.File;
-    },
-  ) {
-    const product = await this.service.findOne(id);
-    if (product === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        product,
-      );
+  async update(@Param('id') id: number, @Body() payload: any, @Res() res) {
+    try {
+      const data = await this.service.findOne(id);
+      if (data === null)
+        return res.status(404).json({ data, message: 'Data not found' });
+
+      await this.service.update(id, payload);
+      await this.optionService.createOrUpdate(id, payload.options);
+      await this.optionService.removeOptions(payload.deleted_options);
+
+      const newdata = await this.service.findOne(id);
+      return res.status(200).json({ data: newdata, message: 'Data updated' });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ data: null, message: 'Error, ' + error.message });
     }
-
-    console.log(payload.images);
-    const updateProduct = await this.service.update(+id, payload);
-
-    if (payload.images) {
-      const images = JSON.parse(payload.images);
-      await this.mediaService.truncateMediasByProduct(id);
-      await this.mediaService.create(id, images);
-    }
-
-    if (typeof files.video !== 'undefined') {
-      const videos = await this.service.uploadFiles(files.video);
-      await this.mediaService.create(id, videos, 'video');
-    }
-
-    if (typeof payload.deleted_medias !== 'undefined') {
-      await this.mediaService.deleteFiles(payload.deleted_medias);
-    }
-
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_UPDATED,
-      updateProduct,
-    );
   }
 
   @Delete(':id')

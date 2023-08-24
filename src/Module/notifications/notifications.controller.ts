@@ -90,12 +90,7 @@ export class NotificationsController {
   ) {
     const data = await this.service.findOne(id);
     if (data === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        data,
-      );
+      return res.status(404).json({ data, message: 'Data not found' });
     }
     if (data.status === 'SENT') {
       return this.helpers.response(
@@ -120,12 +115,7 @@ export class NotificationsController {
   async remove(@Param('id') id: number, @Res() res) {
     const data = await this.service.findOne(id);
     if (data === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        data,
-      );
+      return res.status(404).json({ data, message: 'Data not found' });
     }
     if (data.status === 'SENT') {
       return this.helpers.response(

@@ -123,12 +123,9 @@ export class TransactionsController {
   async findOne(@Param('id') id: string, @Res() res) {
     const admin = await this.service.findOne(id);
     if (admin === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        null,
-      );
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
     }
 
     return this.helpers.response(

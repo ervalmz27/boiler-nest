@@ -1,14 +1,15 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { PRODUCTTAG_PROVIDER } from '@/Helpers/contants';
+import { PRODUCT_TAG_PROVIDER } from '@/Helpers/contants';
 import { ProductTag } from './entities/productTag.entity';
 import { Op } from 'sequelize';
+import { Product } from '../product/entities/product.entity';
 
 @Injectable()
 export class ProductTagService {
   private readonly logger = new Logger(ProductTagService.name);
 
   constructor(
-    @Inject(PRODUCTTAG_PROVIDER)
+    @Inject(PRODUCT_TAG_PROVIDER)
     private readonly repository: typeof ProductTag,
   ) {}
 
@@ -30,6 +31,20 @@ export class ProductTagService {
           },
         ],
       },
+      include: [
+        {
+          model: Product,
+          attributes: ['name'],
+        },
+      ],
+    });
+  }
+
+  async findByProduct(product_id) {
+    return this.repository.findAll({
+      where: { product_id },
+      order: [['name', 'desc']],
+      attributes: ['name'],
     });
   }
 
@@ -118,5 +133,17 @@ export class ProductTagService {
 
   async remove(id: number) {
     return await this.repository.destroy({ where: { id } });
+  }
+
+  async bulkCreate(id, payload) {
+    const ret = [];
+    for (const p of payload) {
+      ret.push({
+        product_id: id,
+        name: p,
+      });
+    }
+
+    return await this.repository.bulkCreate(ret);
   }
 }

@@ -1,9 +1,9 @@
-import { PRODUCTTAG_PROVIDER } from '@/Helpers/contants';
+import { PRODUCT_TAG_PROVIDER } from '@/Helpers/contants';
 import { ProductTag } from './entities/productTag.entity';
 
 export const ProductTagProvider = [
   {
-    provide: PRODUCTTAG_PROVIDER,
+    provide: PRODUCT_TAG_PROVIDER,
     useValue: ProductTag,
   },
 ];

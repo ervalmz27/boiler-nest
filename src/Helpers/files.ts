@@ -27,7 +27,7 @@ export default class SpaceFile {
     foldername = '',
     contentType = '',
   ) => {
-    let prefix = 'yoyokitchen/';
+    let prefix = 'ys/';
 
     if (foldername !== '') {
       prefix += foldername + '/';

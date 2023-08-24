@@ -52,36 +52,23 @@ export class DeliveriesController {
   @Put('/free-setup')
   async updateFreeSetup(@Body() payload: UpdateFreeSetupDto, @Res() res) {
     const data = await this.freeService.updateFreeSetup(1, payload);
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      data,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   @Post('/free-setup')
   async findFreeSetup(@Res() res) {
     const data = await this.freeService.findFreeSetup();
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      data,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
     const admin = await this.service.findOne(+id);
     if (admin === null) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        null,
-      );
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
     }
 
     return this.helpers.response(
