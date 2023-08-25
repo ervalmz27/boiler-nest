@@ -21,6 +21,8 @@ import { ProductMedia } from '@/Module/product/entities/productMedia.entity';
 import { ProductCollectionItem } from '@/Module/productCollection/entities/productCollectionItem.entity';
 import { Notifications } from '@/Module/notifications/entities/notifications.entity';
 import { ProductTag } from '@/Module/productTag/entities/productTag.entity';
+import { ProductWishlist } from '@/Module/product/entities/productWishlist.entity';
+import { TransactionLog } from '@/Module/transaction/entities/transactionPaymentLog.entity';
 
 export const databaseProviders = [
   {
@@ -59,9 +61,10 @@ export const databaseProviders = [
         ProductMedia,
         ProductCollectionItem,
         ProductCollection,
+        ProductWishlist,
         Transaction,
         TransactionProductDetail,
-
+        TransactionLog,
         Notifications,
       ]);
 

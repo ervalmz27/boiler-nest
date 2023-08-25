@@ -9,38 +9,28 @@ import {
   Post,
   Put,
   Req,
-  UseInterceptors,
-  UploadedFiles,
   Logger,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import * as bcrypt from 'bcrypt';
-import axios from 'axios';
 
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
 import { ProductMediasService } from './productMedias.service';
 import { ProductOptionsService } from './productOptions.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
-import { allowRunningCron } from '@/Config/generic.config';
 import { ProductTagService } from '../productTag/productTag.service';
+import { ProductWishlistService } from './services/productWishlist.service';
 
 @Controller('products')
 export class ProductsController {
   private readonly helpers = new Helpers();
-  private readonly logger = new Logger(ProductsController.name);
 
   constructor(
     private readonly service: ProductsService,
-    private readonly mediaService: ProductMediasService,
     private readonly optionService: ProductOptionsService,
-    private readonly categoryService: ProductCategoriesService,
-    private readonly notificationService: NotificationsService,
     private readonly tagService: ProductTagService,
+    private readonly wishlistService: ProductWishlistService,
   ) {}
 
   @Get()
@@ -163,5 +153,24 @@ export class ProductsController {
       RESPONSES.FAIL_DELETED,
       null,
     );
+  }
+
+  //
+  @Post('getCustomerWishlist')
+  async getCustomerWishList(@Body() payload, @Res() res) {
+    const { customer_id } = payload;
+    const data = await this.wishlistService.getWishListByCustomer(customer_id);
+    return res.status(200).json({ data });
+  }
+
+  //
+  @Post('deleteCustomerWishlist')
+  async deleteCustomerWishList(@Body() payload, @Res() res) {
+    const { id, customer_id } = payload;
+    const data = await this.wishlistService.deleteCustomerWishlist(
+      id,
+      customer_id,
+    );
+    return res.status(200).json({ data });
   }
 }

@@ -1,13 +1,10 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
 
 import { TRANSACTION_PROVIDER } from '@/Helpers/contants';
 import { Transaction } from './entities/transaction.entity';
 
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { UpdateDeliveryStatusDto } from './dto/update-deliveryStatus.dto';
-import { UpdatePaymentStatusDto } from './dto/update-paymentStatus.dto';
-import { UpdateTransactionStatusDto } from './dto/update-transactionStatus.dto';
 import { TransactionProductDetail } from './entities/transactionProductDetail.entity';
 import { Customer } from '../customer/entities/customer.entity';
 
@@ -351,5 +348,15 @@ export class TransactionsService {
         },
       },
     );
+  }
+
+  async getTotalSpendingByCustomer(customer_id) {
+    const total = this.repository.sum('total', {
+      where: {
+        customer_id,
+      },
+    });
+
+    return total === null ? 0 : total;
   }
 }

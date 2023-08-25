@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PRODUCT_PROVIDER } from '@/Helpers/contants';
+import {
+  PRODUCT_PROVIDER,
+  PRODUCT_WISHLIST_PROVIDER,
+} from '@/Helpers/contants';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
 import SpaceFile from '@/Helpers/files';
@@ -8,6 +11,7 @@ import { ProductMedia } from './entities/productMedia.entity';
 import { ProductOption } from './entities/productOption.entity';
 import { ProductCategory } from '../productCategory/entities/productCategory.entity';
 import { ProductTag } from '../productTag/entities/productTag.entity';
+import { ProductWishlist } from './entities/productWishlist.entity';
 @Injectable()
 export class ProductsService {
   private spacefile = new SpaceFile();

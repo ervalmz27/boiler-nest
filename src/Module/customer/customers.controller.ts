@@ -22,6 +22,7 @@ import { CustomersService } from './customers.service';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import SpaceFile from '@/Helpers/files';
+import { TransactionsService } from '../transaction/transactions.service';
 
 @Controller('customers')
 export class CustomersController {
@@ -29,7 +30,10 @@ export class CustomersController {
   private spacefile = new SpaceFile();
   private readonly logger = new Logger(CustomersController.name);
 
-  constructor(private readonly service: CustomersService) {}
+  constructor(
+    private readonly service: CustomersService,
+    private readonly transactionService: TransactionsService,
+  ) {}
 
   @Get()
   async findAll(@Res() res, @Req() req) {
@@ -54,23 +58,20 @@ export class CustomersController {
 
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
-    const user = await this.service.findOne(+id);
-    console.log(user);
-    if (user === null) {
+    const data = await this.service.findOne(+id);
+    if (data === null) {
       return this.helpers.response(
         res,
         HttpStatus.NOT_FOUND,
         RESPONSES.DATA_NOTFOUND,
-        user,
+        data,
       );
     }
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      user,
-    );
+    data.dataValues['total_spending'] =
+      await this.transactionService.getTotalSpendingByCustomer(id);
+
+    return res.status(200).json({ data });
   }
 
   @Post()

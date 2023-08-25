@@ -4,9 +4,9 @@ import { ProductsProvider } from './products.providers';
 import { ProductsController } from './products.controller';
 import { ProductOptionsService } from './productOptions.service';
 import { ProductMediasService } from './productMedias.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
 import { ProductTagService } from '../productTag/productTag.service';
+import { ProductWishlistService } from './services/productWishlist.service';
 
 @Module({
   controllers: [ProductsController],
@@ -15,8 +15,8 @@ import { ProductTagService } from '../productTag/productTag.service';
     ProductOptionsService,
     ProductMediasService,
     ProductCategoriesService,
-    NotificationsService,
     ProductTagService,
+    ProductWishlistService,
     ...ProductsProvider,
   ],
 })

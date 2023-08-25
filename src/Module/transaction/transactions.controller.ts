@@ -5,17 +5,13 @@ import {
   HttpStatus,
   Res,
   Body,
-  Delete,
   Post,
   Put,
   Req,
   UseGuards,
   Request,
   Query,
-  Logger,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import * as moment from 'moment-timezone';
 import Helpers from '@/Helpers/helpers';
 
 import { RESPONSES } from '@/Helpers/contants';
@@ -27,34 +23,19 @@ import {
 import { ProductOptionsService } from '../product/productOptions.service';
 import { TransactionProductDetailsService } from './transactionProductDetail.service';
 import { TransactionsService } from './transactions.service';
-import { DeliveriesService } from '../deliveries/deliveries.service';
-import { PaymentsService } from '../payments/payments.service';
-import { NotificationsService } from '../notifications/notifications.service';
-
-import { DiscountsService } from '../discounts/discounts.service';
-
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { UpdateTransactionStatusDto } from './dto/update-transactionStatus.dto';
-import { UpdatePaymentStatusDto } from './dto/update-paymentStatus.dto';
-import { UpdateDeliveryStatusDto } from './dto/update-deliveryStatus.dto';
 
 import { XAuthGuards } from '../auth/xauth.guard';
+import { TransactionLogServices } from './services/transactionLog.service';
 // import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
 @Controller('transactions')
 export class TransactionsController {
-  private readonly logger = new Logger('Transactions');
   private readonly helpers = new Helpers();
   constructor(
     private readonly service: TransactionsService,
-    // private readonly transactionEventService: TransactionEventService,
+    private readonly logService: TransactionLogServices,
     private readonly productOptionService: ProductOptionsService,
-    private readonly deliveryService: DeliveriesService,
-    private readonly customPaymentService: PaymentsService,
-
     private readonly trxProductDetailService: TransactionProductDetailsService,
-    private readonly notificationService: NotificationsService,
-    private readonly discountService: DiscountsService,
   ) {}
 
   @Get()
@@ -113,19 +94,38 @@ export class TransactionsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res) {
-    const admin = await this.service.findOne(id);
-    if (admin === null) {
+    const data = await this.service.findOne(id);
+    if (data === null) {
       return res
         .status(404)
         .response({ data: null, message: 'Data not found' });
     }
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      admin,
-    );
+    return res.status(200).json({ data, message: 'Data found' });
+  }
+
+  @Post('getPaymentLog/:id')
+  async getPaymentLog(@Param('id') id: string, @Res() res) {
+    const data = await this.logService.getPaymentLog(id);
+    if (data === null) {
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
+    }
+
+    return res.status(200).json({ data, message: 'Data found' });
+  }
+
+  @Post('getDeliveryLog/:id')
+  async getDeliveryLog(@Param('id') id: string, @Res() res) {
+    const data = await this.logService.getDeliveryLog(id);
+    if (data === null) {
+      return res
+        .status(404)
+        .response({ data: null, message: 'Data not found' });
+    }
+
+    return res.status(200).json({ data, message: 'Data found' });
   }
 
   // @UseGuards(XAuthGuards)
@@ -330,9 +330,25 @@ export class TransactionsController {
       transaction.id,
       validOption.detail,
     );
+
+    await this.storeLog(transaction.id);
     return res
       .status(200)
       .json({ data: transaction.id, message: 'Transaction Submitted' });
+  }
+
+  async storeLog(id) {
+    this.logService.create(
+      id,
+      'payment',
+      'Transaction Initiated, DELIVERY status set to ' + PAYMENT_STATUS.PENDING,
+    );
+    this.logService.create(
+      id,
+      'delivery',
+      'Transaction Initiated, DELIVERY status set to ' +
+        DELIVERY_STATUS.PENDING,
+    );
   }
 
   // @Put(':id')

@@ -12,6 +12,7 @@ import {
   PRODUCT_OPTION_PROVIDER,
   PRODUCT_PROVIDER,
   TRANSACTION_EVENT_PROVIDER,
+  TRANSACTION_LOG_PROVIDER,
   TRANSACTION_PRODUCT_DETAIL_PROVIDER,
   TRANSACTION_PRODUCT_PROVIDER,
   TRANSACTION_PROVIDER,
@@ -26,11 +27,16 @@ import { Delivery } from '../deliveries/entities/delivery.entity';
 import { Discount } from '../discounts/entities/discount.entity';
 import { Payment } from '../payments/entities/payment.entity';
 import { Notifications } from '../notifications/entities/notifications.entity';
+import { TransactionLog } from './entities/transactionPaymentLog.entity';
 
 export const TransactionsProvider = [
   {
     provide: TRANSACTION_PROVIDER,
     useValue: Transaction,
+  },
+  {
+    provide: TRANSACTION_LOG_PROVIDER,
+    useValue: TransactionLog,
   },
   {
     provide: PRODUCT_PROVIDER,

@@ -5,6 +5,8 @@ import { CustomersService } from './customers.service';
 import { CustomersProvider } from './customers.providers';
 import { CustomersController } from './customers.controller';
 import { NotificationsService } from '../notifications/notifications.service';
+import { TransactionsModule } from '../transaction/transactions.module';
+import { TransactionsService } from '../transaction/transactions.service';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { NotificationsService } from '../notifications/notifications.service';
     }),
   ],
   controllers: [CustomersController],
-  providers: [CustomersService, NotificationsService, ...CustomersProvider],
+  providers: [CustomersService, TransactionsService, ...CustomersProvider],
   exports: [CustomersService],
 })
 export class CustomersModule {}

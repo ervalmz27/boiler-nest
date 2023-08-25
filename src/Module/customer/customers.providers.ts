@@ -3,10 +3,10 @@ import {
   MEMBERCOUPON_PROVIDER,
   MEMBERTIER_PROVIDER,
   MEMBER_PROVIDER,
-  NOTIFICATION_PROVIDER,
+  TRANSACTION_PROVIDER,
 } from '@/Helpers/contants';
 import { Customer } from './entities/customer.entity';
-import { LogNotification } from '../notifications/entities/logNotification.entity';
+import { Transaction } from '../transaction/entities/transaction.entity';
 
 export const CustomersProvider = [
   {
@@ -14,7 +14,7 @@ export const CustomersProvider = [
     useValue: Customer,
   },
   {
-    provide: NOTIFICATION_PROVIDER,
-    useValue: LogNotification,
+    provide: TRANSACTION_PROVIDER,
+    useValue: Transaction,
   },
 ];

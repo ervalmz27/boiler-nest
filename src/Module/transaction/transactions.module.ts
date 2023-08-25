@@ -12,6 +12,7 @@ import { DiscountsService } from '../discounts/discounts.service';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { PaymentsService } from '../payments/payments.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { TransactionLogServices } from './services/transactionLog.service';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { NotificationsService } from '../notifications/notifications.service';
   providers: [
     TransactionsService,
     TransactionProductDetailsService,
+    TransactionLogServices,
     ProductsService,
     ProductOptionsService,
     CustomersService,
