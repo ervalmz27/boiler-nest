@@ -26,11 +26,11 @@ export class Transaction extends Model {
   id: string;
 
   @ForeignKey(() => Customer)
-  @Column({ allowNull: false, type: DataType.INTEGER })
+  @Column({ allowNull: true, type: DataType.INTEGER })
   customer_id: number;
 
   @BelongsTo(() => Customer)
-  member: Customer;
+  customer: Customer;
 
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'ORDER' })
   type: string;
@@ -38,25 +38,13 @@ export class Transaction extends Model {
   @Column({ allowNull: true, type: DataType.STRING })
   order_number: string;
 
-  @Column({ allowNull: false, type: DataType.STRING })
-  contact_firstname: string;
-
-  @Column({ allowNull: false, type: DataType.STRING })
-  contact_lastname: string;
-
-  @Column({ allowNull: false, type: DataType.STRING })
-  contact_email: string;
-
-  @Column({ allowNull: false, type: DataType.STRING })
-  contact_phone: string;
-
   @Column({ allowNull: true, type: DataType.STRING })
   remarks: string;
 
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'HKD' })
   currency: string;
 
-  @Column({ allowNull: false, type: DataType.STRING, defaultValue: 'CUSTOM' })
+  @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'CUSTOM' })
   payment_method: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
@@ -96,34 +84,10 @@ export class Transaction extends Model {
   delivery_remark: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
-  delivery_remark_admin: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
   delivery_message: string;
 
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'PENDING' })
   delivery_status: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  selfpickup_name: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  selfpickup_phone: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  selfpickup_email: string;
-
-  @Column({ allowNull: true, type: DataType.INTEGER })
-  member_coupon_id: number;
-
-  @Column({ allowNull: true, type: DataType.INTEGER })
-  coupon_id: number;
-
-  @Column({ allowNull: true, type: DataType.DECIMAL(25, 5), defaultValue: 0 })
-  coupon_discount: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  coupon_detail: string;
 
   @Column({ allowNull: true, type: DataType.INTEGER })
   discount_id: number;
@@ -133,12 +97,6 @@ export class Transaction extends Model {
 
   @Column({ allowNull: true, type: DataType.TEXT })
   discount_detail: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  payer_answers: string;
-
-  @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  total_discount_tier: number;
 
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
   total_discount_code: number;

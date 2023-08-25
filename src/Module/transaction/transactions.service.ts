@@ -145,7 +145,7 @@ export class TransactionsService {
   }
 
   async create(payload: any) {
-    return await this.repository.create({ ...payload });
+    return await this.repository.create(payload);
   }
 
   async update(id: number, payload: UpdateTransactionDto) {

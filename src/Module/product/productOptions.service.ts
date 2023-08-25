@@ -30,6 +30,41 @@ export class ProductOptionsService {
     });
   }
 
+  async validateProductOption(productOptions) {
+    let total = 0;
+    const detail = [];
+    const valid = true;
+    for (const opt of productOptions) {
+      const data = await this.repository.findOne({
+        where: {
+          id: opt.product_option_id,
+        },
+        raw: true,
+      });
+      if (opt.qty > data.quantity) {
+        valid = fasle;
+      }
+      if (data !== null) {
+        const subtotal = opt.qty * data.selling_price;
+        detail.push({
+          product_option_id: data.id,
+          product_id: data.product_id,
+          list_price: data.list_price,
+          selling_price: data.selling_price,
+          stock: data.quantity,
+          qty: opt.qty,
+          subtotal: subtotal,
+        });
+        total += subtotal;
+      }
+    }
+    return {
+      valid,
+      detail,
+      total,
+    };
+  }
+
   //
   async create(payload: any) {
     return await this.repository.create(payload);
