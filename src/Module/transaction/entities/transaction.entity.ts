@@ -32,6 +32,9 @@ export class Transaction extends Model {
   @BelongsTo(() => Customer)
   customer: Customer;
 
+  @Column({ allowNull: true, type: DataType.DATEONLY })
+  order_date: string;
+
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'ORDER' })
   type: string;
 

@@ -15,7 +15,7 @@ import Helpers from '@/Helpers/helpers';
 import { NotificationsService } from './notifications.service';
 import { LogNotificationsService } from './logNotifications.service';
 import { RESPONSES } from '@/Helpers/contants';
-import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
+// import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
 import { NotificationDto } from './dto/notification.dto';
 
@@ -174,7 +174,7 @@ export class NotificationsController {
   async sendTest(@Body() payload: any, @Res() res) {
     this.service.sendEmail({
       destination: 'ronaldochristover@gmail.com',
-      templateId: TEMPLATE_ID.ORDER_CONFIRMATION,
+      templateId: '',
       templatePayload: {
         Order_No: 'TEST0001',
         Order_Date: '23 OKTOBER 1990',

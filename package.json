@@ -43,6 +43,7 @@
     "moment-timezone": "^0.5.43",
     "mysql2": "^3.2.0",
     "nestjs-pino": "^3.3.0",
+    "order-id": "^2.1.2",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",

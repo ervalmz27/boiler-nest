@@ -19,7 +19,11 @@ import * as moment from 'moment-timezone';
 import Helpers from '@/Helpers/helpers';
 
 import { RESPONSES } from '@/Helpers/contants';
-
+import {
+  ORDER_STATUS,
+  PAYMENT_STATUS,
+  DELIVERY_STATUS,
+} from '@/Helpers/contants/status';
 import { ProductOptionsService } from '../product/productOptions.service';
 import { TransactionProductDetailsService } from './transactionProductDetail.service';
 import { TransactionsService } from './transactions.service';
@@ -35,12 +39,11 @@ import { UpdatePaymentStatusDto } from './dto/update-paymentStatus.dto';
 import { UpdateDeliveryStatusDto } from './dto/update-deliveryStatus.dto';
 
 import { XAuthGuards } from '../auth/xauth.guard';
-import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
+// import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
 @Controller('transactions')
 export class TransactionsController {
   private readonly logger = new Logger('Transactions');
-
   private readonly helpers = new Helpers();
   constructor(
     private readonly service: TransactionsService,
@@ -58,22 +61,11 @@ export class TransactionsController {
   async findAll(@Res() res, @Req() req) {
     const payload = req.query;
 
-    const user = await this.service.findAll(payload);
-    if (user.length < 1) {
-      return this.helpers.response(
-        res,
-        HttpStatus.NOT_FOUND,
-        RESPONSES.DATA_NOTFOUND,
-        user,
-      );
-    }
+    const data = await this.service.findAll(payload);
 
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_FOUND,
-      user,
-    );
+    if (data === null) return res.status(404).json({ data });
+
+    return res.status(200).json({ data });
   }
 
   @Post('findAllWithCriteria')
@@ -311,26 +303,36 @@ export class TransactionsController {
   //   }
   // }
 
-  @Post('')
+  @Post()
   async create(@Body() payload, @Res() res) {
-    const subtotal = 0;
+    let subtotal = 0;
     const discount = payload.discount;
 
     const validOption = await this.productOptionService.validateProductOption(
       payload.items,
     );
+    subtotal = validOption.total;
 
     const transaction = await this.service.create({
+      order_number: this.helpers.generateOrderNumber(),
       order_date: payload.order_date,
       customer_id: payload.customer_id,
-      status: payload.status,
       delivery_cost: parseInt(payload.delivery_cost) || 0,
       delivery_method: payload.delivery_method,
       subtotal: subtotal,
-      discount: payload.discount,
+      total_discount: payload.discount,
       total: subtotal - discount,
+      payment_status: PAYMENT_STATUS.PENDING,
+      status: ORDER_STATUS.IN_PROGRESS,
+      delivery_status: DELIVERY_STATUS.PENDING,
     });
-    return res.status({ data: transaction });
+    await this.trxProductDetailService.create(
+      transaction.id,
+      validOption.detail,
+    );
+    return res
+      .status(200)
+      .json({ data: transaction.id, message: 'Transaction Submitted' });
   }
 
   // @Put(':id')
@@ -362,176 +364,48 @@ export class TransactionsController {
   //   );
   // }
 
-  // @Put(':id/updateTransactionStatus')
-  // async updateTransactionStatus(
-  //   @Param('id') id: string,
-  //   @Body() payload: UpdateTransactionStatusDto,
-  //   @Res() res,
-  // ) {
-  //   const transaction = await this.service.findOne(id);
-  //   if (transaction === null) {
-  //     return this.helpers.response(
-  //       res,
-  //       HttpStatus.NOT_FOUND,
-  //       RESPONSES.DATA_NOTFOUND,
-  //       transaction,
-  //     );
-  //   }
+  @Put('updateTransactionStatus')
+  async updateTransactionStatus(@Body() payload: any, @Res() res) {
+    const { transaction_id, status } = payload;
+    const transaction = await this.service.findOne(transaction_id);
+    if (transaction === null)
+      return res.status(404).json({ data: null, message: 'Data not found' });
 
-  //   await this.service.updateTransactionStatus(id, payload);
-  //   return this.helpers.response(
-  //     res,
-  //     HttpStatus.OK,
-  //     RESPONSES.DATA_UPDATED,
-  //     null,
-  //   );
-  // }
+    await this.service.updateTransactionStatus(transaction_id, status);
+    return res
+      .status(200)
+      .json({ data: null, message: 'transaction status updated' });
+  }
 
-  // @Put(':id/updatePaymentStatus')
-  // async updatePaymentStatus(
-  //   @Param('id') id: string,
-  //   @Body() payload: UpdatePaymentStatusDto,
-  //   @Res() res,
-  // ) {
-  //   const transaction = await this.service.findOne(id);
-  //   if (transaction === null) {
-  //     return this.helpers.response(
-  //       res,
-  //       HttpStatus.NOT_FOUND,
-  //       RESPONSES.DATA_NOTFOUND,
-  //       transaction,
-  //     );
-  //   }
+  @Put('updatePaymentStatus')
+  async updatePaymentStatus(@Body() payload: any, @Res() res) {
+    const { transaction_id, payment_status } = payload;
+    const transaction = await this.service.findOne(transaction_id);
 
-  //   await this.service.updatePaymentStatus(id, payload);
+    if (transaction === null) return res.status(404).json({ data: null });
 
-  //   if (payload.payment_status === 'PAID') {
-  //     const currentTimeFormatted = moment(transaction.created_at)
-  //       .tz('Asia/Hong_Kong')
-  //       .format('LLL');
-  //     const {
-  //       delivery_address,
-  //       delivery_address2,
-  //       delivery_address3,
-  //       delivery_address4,
-  //       delivery_district,
-  //       delivery_region,
-  //     } = transaction;
+    await this.service.updatePaymentStatus(transaction_id, payment_status);
 
-  //     const mailPayload = {
-  //       email: transaction.contact_email,
-  //       customerName: transaction.contact_firstname,
-  //       orderNumber: transaction.order_number,
-  //       orderDate: currentTimeFormatted,
-  //       paymentMethod:
-  //         transaction.payment_method === 'STRIPE'
-  //           ? 'Credit Card'
-  //           : transaction.payment_method,
+    return res
+      .status(200)
+      .json({ data: null, message: 'payment status updated' });
+  }
 
-  //       deliveryAddress: this.handleDeliveryAddress({
-  //         delivery_address,
-  //         delivery_address2,
-  //         delivery_address3,
-  //         delivery_address4,
-  //         delivery_district,
-  //         delivery_region,
-  //       }),
+  @Put('updateDeliveryStatus')
+  async updateDeliveryStatus(@Body() payload: any, @Res() res) {
+    const { transaction_id, delivery_status } = payload;
 
-  //       deliveryEmail: transaction.selfpickup_email,
-  //       deliveryPhone: transaction.selfpickup_phone,
-  //       productitems: this.castToMailFormat(
-  //         transaction.products.map((e) => {
-  //           e['product_name'] = e.product?.name;
-  //           return e;
-  //         }),
-  //       ),
-  //       totalProduct: transaction.subtotal_product,
-  //       totalDiscount:
-  //         transaction.total_discount + transaction.total_discount_tier,
-  //       totalDelivery: transaction.total_delivery,
-  //       totalGift: 0,
-  //       total: transaction.total,
-  //     };
-  //     await this.notificationService.sendOrderConfirmationMail(mailPayload);
-  //   }
+    const transaction = await this.service.findOne(transaction_id);
+    if (transaction === null)
+      return res
+        .status(404)
+        .json({ data: transaction, message: 'Data not found' });
 
-  //   return this.helpers.response(
-  //     res,
-  //     HttpStatus.OK,
-  //     RESPONSES.DATA_UPDATED,
-  //     null,
-  //   );
-  // }
-
-  // @Put(':id/updateDeliveryStatus')
-  // async updateDeliveryStatus(
-  //   @Param('id') id: string,
-  //   @Body() payload: UpdateDeliveryStatusDto,
-  //   @Res() res,
-  // ) {
-  //   const transaction = await this.service.findOne(id);
-  //   if (transaction === null) {
-  //     return this.helpers.response(
-  //       res,
-  //       HttpStatus.NOT_FOUND,
-  //       RESPONSES.DATA_NOTFOUND,
-  //       transaction,
-  //     );
-  //   }
-
-  //   await this.service.updateDeliveryStatus(id, payload);
-
-  //   // Send Email
-  //   const {
-  //     delivery_address,
-  //     delivery_address2,
-  //     delivery_address3,
-  //     delivery_address4,
-  //     delivery_district,
-  //     delivery_region,
-  //   } = transaction;
-
-  //   if (payload.delivery_status === 'SHIPPED') {
-  //     const mailPayload = {
-  //       email: transaction.contact_email,
-  //       // customerName: transaction.member.name,
-  //       orderNumber: transaction.order_number,
-  //       orderDate: moment(transaction.createdAt).format('LLL'),
-  //       paymentMethod:
-  //         transaction.payment_method === 'STRIPE'
-  //           ? 'Credit Card'
-  //           : transaction.payment_method,
-
-  //       deliveryAddress: this.handleDeliveryAddress({
-  //         delivery_address,
-  //         delivery_address2,
-  //         delivery_address3,
-  //         delivery_address4,
-  //         delivery_district,
-  //         delivery_region,
-  //       }),
-  //       shippingMessage: payload.delivery_message,
-
-  //       deliveryEmail: transaction.selfpickup_email,
-  //       deliveryPhone: transaction.selfpickup_phone,
-  //       productitems: this.castToMailFormat(
-  //         transaction.products.map((e) => {
-  //           e['product_name'] = e.product?.name;
-  //           return e;
-  //         }),
-  //       ),
-  //       extra_information: transaction.delivery_remark || '',
-  //     };
-  //     await this.notificationService.sendOrderShippedMail(mailPayload);
-  //   }
-
-  //   return this.helpers.response(
-  //     res,
-  //     HttpStatus.OK,
-  //     RESPONSES.DATA_UPDATED,
-  //     null,
-  //   );
-  // }
+    await this.service.updateDeliveryStatus(transaction_id, delivery_status);
+    return res
+      .status(200)
+      .json({ data: null, message: 'payment status updated' });
+  }
 
   // @Put(':id/updateDeliveryRemark')
   // async updateDeliveryRemark(

@@ -1,6 +1,7 @@
 import * as CryptoJS from 'crypto-js';
 import * as dotenv from 'dotenv';
-
+import * as moment from 'moment-timezone';
+const orderid = require('order-id')('Yingshun');
 dotenv.config();
 
 export default class Helpers {
@@ -38,5 +39,10 @@ export default class Helpers {
   castDate(date) {
     const arrDate = date.split('/');
     return arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0];
+  }
+
+  generateOrderNumber() {
+    const orderNumber = orderid.generate().replace(/-/g, '');
+    return 'YS' + moment().format('YY') + orderNumber.substring(0, 8);
   }
 }

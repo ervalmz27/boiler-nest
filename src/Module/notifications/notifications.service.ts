@@ -4,7 +4,7 @@ import axios from 'axios';
 import { NOTIFICATION_PROVIDER } from '@/Helpers/contants';
 import { Notifications } from './entities/notifications.entity';
 import mailConfig from '@/Config/email.config';
-import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
+// import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 const SENDER_MAIL = mailConfig.email_sender;
 const MAIL_CC = mailConfig.email_cc;
 const MAIL_BCC = mailConfig.email_bcc;
@@ -112,7 +112,7 @@ export class NotificationsService {
 
     await this.sendEmail({
       destination: email,
-      templateId: TEMPLATE_ID.ORDER_CONFIRMATION,
+      // templateId: TEMPLATE_ID.ORDER_CONFIRMATION,
       templatePayload: {
         Order_No: orderNumber,
         Order_Date: orderDate,
@@ -191,7 +191,7 @@ export class NotificationsService {
     } = payload;
     await this.sendEmail({
       destination: email,
-      templateId: TEMPLATE_ID.SHIPING_STATUS_UPDATE,
+      // templateId: TEMPLATE_ID.SHIPING_STATUS_UPDATE,
       templatePayload: {
         Order_No: orderNumber,
         Customer_Name: customerName,

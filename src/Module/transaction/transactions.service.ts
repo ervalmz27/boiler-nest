@@ -22,23 +22,11 @@ export class TransactionsService {
     const { q, customer_id, limit, status, delivery_status, payment_status } =
       payload;
 
-    const filter = {
-      [Op.or]: [
-        {
-          order_number: {
-            [Op.substring]: q || '',
-          },
-        },
-      ],
-    };
+    const filter = {};
 
     if (typeof customer_id != 'undefined' && customer_id !== null) {
       filter['customer_id'] = customer_id;
     }
-
-    filter['order_number'] = {
-      [Op.not]: null,
-    };
 
     if (status && status !== '' && status !== null) {
       filter['status'] = status;
@@ -52,14 +40,11 @@ export class TransactionsService {
       filter['payment_status'] = payment_status;
     }
 
-    const pageLimit = parseInt(limit ?? '9999999999');
-
+    console.log(filter);
     return await this.repository.findAll<Transaction>({
       where: filter,
-      limit: pageLimit,
       order: [['created_at', 'DESC']],
       include: { all: true },
-      // include: { all: true, nested: true },
     });
   }
 
@@ -157,33 +142,24 @@ export class TransactionsService {
     );
   }
 
-  async updateTransactionStatus(
-    id: string,
-    payload: UpdateTransactionStatusDto,
-  ) {
+  async updateTransactionStatus(id, status) {
+    return await this.repository.update({ status }, { where: { id } });
+  }
+
+  async updateDeliveryStatus(id, delivery_status) {
     return await this.repository.update(
-      { status: payload.order_status },
+      {
+        delivery_status,
+      },
       {
         where: { id },
       },
     );
   }
 
-  async updateDeliveryStatus(id: string, payload: UpdateDeliveryStatusDto) {
-    const newPayload = {
-      delivery_status: payload.delivery_status,
-    };
-    if (payload.delivery_message !== null && payload.delivery_message !== '') {
-      newPayload['delivery_message'] = payload.delivery_message;
-    }
-    return await this.repository.update(newPayload, {
-      where: { id },
-    });
-  }
-
-  async updatePaymentStatus(id: string, payload: UpdatePaymentStatusDto) {
+  async updatePaymentStatus(id: string, payment_status) {
     return await this.repository.update(
-      { payment_status: payload.payment_status },
+      { payment_status },
       {
         where: { id },
       },
