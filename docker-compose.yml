@@ -1,34 +1,15 @@
 version: '3.8'
 
 services:
-  dev:
-    container_name: yoyo_be_dev
-    image: yoyo-be-dev:1.0.0
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    command: npm run start:debug
-    ports:
-      - ${PORT}:${PORT}
-    networks:
-      - locnet
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    restart: unless-stopped
   prod:
-    container_name: yoyo_be_prod
+    container_name: yingshun_be
     image: registry.digitalocean.com/so-thai/yingshun-be:latest
-    # image: yoyo-be-prod:1.0.0
     env_file:
       - .env
     ports:
       - ${PORT}:${PORT}
     networks:
       - locnet
-    # volumes:
-    #   # - .:/usr/src/app
-    #   - /usr/src/app/node_modules
     restart: unless-stopped
 
 networks:
