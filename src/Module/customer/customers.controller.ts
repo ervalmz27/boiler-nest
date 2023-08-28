@@ -76,16 +76,20 @@ export class CustomersController {
 
   @Post()
   async create(@Body() payload, @Res() res) {
-    if (typeof payload.password !== 'undefined') {
-      payload['password'] = await bcrypt.hash(payload.password, 10);
+    try {
+      if (typeof payload.password !== 'undefined') {
+        payload['password'] = await bcrypt.hash(payload.password, 10);
+      }
+      const data = await this.service.create(payload);
+      await this.service.addCustomerBank(data.id, payload.banks);
+      return res.status(200).json({
+        data: {
+          id: data.id,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({ data: null, message: error.message });
     }
-    const data = await this.service.create(payload);
-    return this.helpers.response(
-      res,
-      HttpStatus.CREATED,
-      RESPONSES.DATA_CREATED,
-      data,
-    );
   }
 
   @Put(':id')
@@ -96,12 +100,10 @@ export class CustomersController {
     }
 
     await this.service.update(+id, payload);
-    return this.helpers.response(
-      res,
-      HttpStatus.OK,
-      RESPONSES.DATA_UPDATED,
-      null,
-    );
+    await this.service.updateCustomerBank(id, payload.banks);
+    await this.service.deletedBanks(payload.deletedBanks);
+
+    return res.status(200).json({ data: null });
   }
 
   @Delete(':id')

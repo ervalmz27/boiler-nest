@@ -1,14 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MEMBER_PROVIDER } from '@/Helpers/contants';
+import { CUSTOMER_PROVIDER, CUSTOMER_BANK_PROVIDER } from '@/Helpers/contants';
 import { Customer } from './entities/customer.entity';
 import { Op } from 'sequelize';
 import * as moment from 'moment-timezone';
+import { CustomerBank } from './entities/customerBank entity';
 
 @Injectable()
 export class CustomersService {
   constructor(
-    @Inject(MEMBER_PROVIDER)
+    @Inject(CUSTOMER_PROVIDER)
     private readonly repository: typeof Customer,
+
+    @Inject(CUSTOMER_BANK_PROVIDER)
+    private readonly bankRepository: typeof CustomerBank,
   ) {}
 
   async getLastId() {
@@ -98,6 +102,7 @@ export class CustomersService {
   async findOne(id: number) {
     return await this.repository.findOne({
       where: { id },
+      include: [{ model: CustomerBank }],
     });
   }
 
@@ -139,10 +144,56 @@ export class CustomersService {
     return await this.repository.create(payload);
   }
 
+  async addCustomerBank(customerId, payload) {
+    const ret = [];
+    for (const p of payload) {
+      p['customer_id'] = customerId;
+      ret.push(p);
+    }
+    return await this.bankRepository.bulkCreate(ret);
+  }
+
   async update(id: number, payload: any) {
     return await this.repository.update(payload, {
       where: { id },
     });
+  }
+
+  async updateCustomerBank(id, payload) {
+    console.log(payload);
+    for (const p of payload) {
+      if (p.id === null) {
+        await this.bankRepository.create({
+          customer_id: id,
+          name: p.name,
+          account_number: p.account_number,
+          is_default: parseInt(p.is_default),
+        });
+      } else {
+        await this.bankRepository.update(
+          {
+            name: p.name,
+            account_number: p.account_number,
+            is_default: p.is_default,
+          },
+          {
+            where: {
+              id: p.id,
+            },
+          },
+        );
+      }
+    }
+  }
+
+  async deletedBanks(banks) {
+    for (const bank of banks) {
+      await this.bankRepository.destroy({
+        where: {
+          id: bank,
+        },
+      });
+    }
   }
 
   async remove(id: number) {

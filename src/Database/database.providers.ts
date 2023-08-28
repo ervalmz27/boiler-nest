@@ -23,6 +23,7 @@ import { Notifications } from '@/Module/notifications/entities/notifications.ent
 import { ProductTag } from '@/Module/productTag/entities/productTag.entity';
 import { ProductWishlist } from '@/Module/product/entities/productWishlist.entity';
 import { TransactionLog } from '@/Module/transaction/entities/transactionPaymentLog.entity';
+import { CustomerBank } from '@/Module/customer/entities/customerBank entity';
 
 export const databaseProviders = [
   {
@@ -49,7 +50,7 @@ export const databaseProviders = [
         User,
         Payment,
         Customer,
-        OnlinePayment,
+        CustomerBank,
         Delivery,
         Content,
         DeliveryFreeSetup,

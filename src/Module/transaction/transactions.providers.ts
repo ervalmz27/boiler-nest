@@ -5,7 +5,7 @@ import {
   DISCOUNT_PROVIDER,
   EVENT_TICKET_PROVIDER,
   MEMBERCOUPON_PROVIDER,
-  MEMBER_PROVIDER,
+  CUSTOMER_PROVIDER,
   NOTIFICATION_PROVIDER,
   PAYMENT_PROVIDER,
   POINTLOG_PROVIDER,
@@ -17,6 +17,7 @@ import {
   TRANSACTION_PRODUCT_PROVIDER,
   TRANSACTION_PROVIDER,
   VOUCHER_SETTING_PROVIDER,
+  CUSTOMER_BANK_PROVIDER,
 } from '@/Helpers/contants';
 import { Transaction } from './entities/transaction.entity';
 import { ProductOption } from '../product/entities/productOption.entity';
@@ -28,6 +29,7 @@ import { Discount } from '../discounts/entities/discount.entity';
 import { Payment } from '../payments/entities/payment.entity';
 import { Notifications } from '../notifications/entities/notifications.entity';
 import { TransactionLog } from './entities/transactionPaymentLog.entity';
+import { CustomerBank } from '../customer/entities/customerBank entity';
 
 export const TransactionsProvider = [
   {
@@ -51,7 +53,7 @@ export const TransactionsProvider = [
     useValue: TransactionDetail,
   },
   {
-    provide: MEMBER_PROVIDER,
+    provide: CUSTOMER_PROVIDER,
     useValue: Customer,
   },
   {
@@ -72,7 +74,12 @@ export const TransactionsProvider = [
     useValue: Notifications,
   },
   {
-    provide: MEMBER_PROVIDER,
+    provide: CUSTOMER_PROVIDER,
     useValue: Customer,
+  },
+
+  {
+    provide: CUSTOMER_BANK_PROVIDER,
+    useValue: CustomerBank,
   },
 ];

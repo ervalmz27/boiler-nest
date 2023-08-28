@@ -8,6 +8,7 @@ import {
   DeletedAt,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { CustomerBank } from './customerBank entity';
 
 @Table({
   tableName: 'customer',
@@ -57,17 +58,14 @@ export class Customer extends Model {
   })
   gender: string;
 
-  @Column({ allowNull: true, type: DataType.STRING })
-  bank: string;
-
-  @Column({ allowNull: true, type: DataType.STRING })
-  bank_account_number: string;
-
   @Column({ allowNull: true, type: DataType.TEXT })
   default_address: string;
 
   @Column({ allowNull: true, type: DataType.TEXT })
   listing_address: string;
+
+  @HasMany(() => CustomerBank)
+  banks: CustomerBank[];
 
   @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
   status: number;
