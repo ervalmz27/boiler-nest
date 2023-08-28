@@ -12,7 +12,7 @@ import {
 import Helpers from '@/Helpers/helpers';
 import { BannerImagesService } from './bannerImages.service';
 
-@Controller('contents')
+@Controller('banner-image')
 export class BannerImagesController {
   private readonly helpers = new Helpers();
   constructor(private readonly service: BannerImagesService) {}
