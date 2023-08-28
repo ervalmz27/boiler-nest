@@ -9,9 +9,9 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'content',
+  tableName: 'news',
 })
-export class Content extends Model {
+export class News extends Model {
   @Column({ allowNull: false, type: DataType.TEXT })
   title: string;
 

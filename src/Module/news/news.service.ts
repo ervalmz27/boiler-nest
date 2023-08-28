@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CONTENT_PROVIDER } from '@/Helpers/contants';
-import { Content } from './entities/content.entity';
+import { NEWS_PROVIDER } from '@/Helpers/contants';
+import { News } from './entities/news.entity';
 
 @Injectable()
-export class ContentsService {
+export class NewsService {
   constructor(
-    @Inject(CONTENT_PROVIDER)
-    private readonly repository: typeof Content,
+    @Inject(NEWS_PROVIDER)
+    private readonly repository: typeof News,
   ) {}
 
   async findAll() {

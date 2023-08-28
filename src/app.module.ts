@@ -26,6 +26,8 @@ import { ImportModule } from './Module/import/imports.module';
 import { APP_FILTER } from '@nestjs/core';
 import { InternalServerErrorFilter } from './InternalServerErrorFilter';
 import { ProductTagModule } from './Module/productTag/productTag.module';
+import { NewsModule } from './Module/news/news.module';
+import { BannerImagesModule } from './Module/bannerImage/bannerImages.module';
 
 @Module({
   imports: [
@@ -64,6 +66,8 @@ import { ProductTagModule } from './Module/productTag/productTag.module';
     OnlinePaymentsModule,
     DeliveriesModule,
     ContentsModule,
+    NewsModule,
+    BannerImagesModule,
     DiscountsModule,
     TransactionsModule,
     NotificationsModule,

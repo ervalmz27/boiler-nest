@@ -13,7 +13,7 @@ import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import { ContentsService } from './contents.service';
 
-@Controller('content')
+@Controller('contents')
 export class ContentsController {
   private readonly helpers = new Helpers();
   constructor(private readonly service: ContentsService) {}

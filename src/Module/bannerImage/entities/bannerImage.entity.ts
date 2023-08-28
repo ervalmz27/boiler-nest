@@ -9,14 +9,14 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'content',
+  tableName: 'banner_images',
 })
-export class Content extends Model {
+export class BannerImage extends Model {
   @Column({ allowNull: false, type: DataType.TEXT })
-  title: string;
+  image_url: string;
 
-  @Column({ allowNull: false, type: DataType.TEXT })
-  content: string;
+  @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
+  order: number;
 
   @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
   is_published: number;

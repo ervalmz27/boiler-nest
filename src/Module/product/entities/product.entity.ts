@@ -38,11 +38,17 @@ export class Product extends Model {
   @Column({ allowNull: true, type: DataType.TEXT })
   description: string;
 
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  minimum_order: number;
+
   @Column({ allowNull: false, type: DataType.INTEGER })
   stock_limit: number;
 
   @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
   status: number;
+
+  @Column({ allowNull: true, type: DataType.SMALLINT, defaultValue: 1 })
+  is_hot: number;
 
   @HasMany(() => ProductMedia)
   medias: ProductMedia[];

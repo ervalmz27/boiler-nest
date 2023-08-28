@@ -24,6 +24,9 @@ import { ProductTag } from '@/Module/productTag/entities/productTag.entity';
 import { ProductWishlist } from '@/Module/product/entities/productWishlist.entity';
 import { TransactionLog } from '@/Module/transaction/entities/transactionPaymentLog.entity';
 import { CustomerBank } from '@/Module/customer/entities/customerBank entity';
+import { BannerImage } from '@/Module/bannerImage/entities/bannerImage.entity';
+import { News } from '@/Module/news/entities/news.entity';
+import { LogCustomer } from '@/Module/log/entities/customerLog.entity';
 
 export const databaseProviders = [
   {
@@ -53,6 +56,8 @@ export const databaseProviders = [
         CustomerBank,
         Delivery,
         Content,
+        BannerImage,
+        News,
         DeliveryFreeSetup,
         Discount,
         Product,
@@ -63,9 +68,12 @@ export const databaseProviders = [
         ProductCollectionItem,
         ProductCollection,
         ProductWishlist,
+
         Transaction,
         TransactionDetail,
         TransactionLog,
+
+        LogCustomer,
         Notifications,
       ]);
 

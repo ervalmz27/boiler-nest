@@ -10,13 +10,12 @@ import {
 } from '@nestjs/common';
 
 import Helpers from '@/Helpers/helpers';
-import { RESPONSES } from '@/Helpers/contants';
-import { ContentsService } from './contents.service';
+import { NewsService } from './news.service';
 
-@Controller('content')
-export class ContentsController {
+@Controller('news')
+export class NewsController {
   private readonly helpers = new Helpers();
-  constructor(private readonly service: ContentsService) {}
+  constructor(private readonly service: NewsService) {}
 
   @Get()
   async findAll(@Res() res) {
