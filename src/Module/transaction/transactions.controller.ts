@@ -335,7 +335,7 @@ export class TransactionsController {
     this.logService.create(
       id,
       'payment',
-      'Transaction Initiated, DELIVERY status set to ' + PAYMENT_STATUS.PENDING,
+      'Transaction Initiated, PAYMENT status set to ' + PAYMENT_STATUS.PENDING,
     );
     this.logService.create(
       id,
