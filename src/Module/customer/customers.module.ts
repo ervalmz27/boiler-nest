@@ -6,7 +6,7 @@ import { CustomersProvider } from './customers.providers';
 import { CustomersController } from './customers.controller';
 import { NotificationsService } from '../notifications/notifications.service';
 import { TransactionsModule } from '../transaction/transactions.module';
-import { TransactionsService } from '../transaction/transactions.service';
+import { TransactionsService } from '../transaction/services/transactions.service';
 
 @Module({
   imports: [

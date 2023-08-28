@@ -15,9 +15,9 @@ import { ProductOption } from '@/Module/product/entities/productOption.entity';
 import { Transaction } from './transaction.entity';
 
 @Table({
-  tableName: 'transaction_product_detail',
+  tableName: 'transaction_detail',
 })
-export class TransactionProductDetail extends Model {
+export class TransactionDetail extends Model {
   @PrimaryKey
   @Column({
     type: DataType.UUID,

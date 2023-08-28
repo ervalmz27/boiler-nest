@@ -2,11 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
 
 import { TRANSACTION_PROVIDER } from '@/Helpers/contants';
-import { Transaction } from './entities/transaction.entity';
+import { Transaction } from '../entities/transaction.entity';
 
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { TransactionProductDetail } from './entities/transactionProductDetail.entity';
-import { Customer } from '../customer/entities/customer.entity';
+import { UpdateTransactionDto } from '../dto/update-transaction.dto';
+import { TransactionDetail } from '../entities/transactionProductDetail.entity';
+import { Customer } from '../../customer/entities/customer.entity';
+import { Product } from '../../product/entities/product.entity';
+import { ProductTag } from '../../productTag/entities/productTag.entity';
 
 @Injectable()
 export class TransactionsService {
@@ -16,32 +18,66 @@ export class TransactionsService {
   ) {}
 
   async findAll(payload: any) {
-    const { q, customer_id, limit, status, delivery_status, payment_status } =
-      payload;
+    const { q, category_id, tags, location, sort } = payload;
 
     const filter = {};
+    let tagFilter = {};
+    const productFilter = {};
+    const productDetailFilter = {};
+    let ordering = [];
+    [['created_at', 'DESC']];
 
-    if (typeof customer_id != 'undefined' && customer_id !== null) {
-      filter['customer_id'] = customer_id;
+    if (sort === 'is_popular') {
+      ordering.push(['total', 'DESC']);
     }
 
-    if (status && status !== '' && status !== null) {
-      filter['status'] = status;
+    if (sort === 'is_relevant') {
+      ordering.push(['created_at', 'DESC']);
     }
 
-    if (delivery_status && delivery_status !== '' && delivery_status !== null) {
-      filter['delivery_status'] = delivery_status;
+    if (q && q !== '') {
+      filter['order_number'] = q;
+    }
+    if (location && location !== '') {
+      filter['location'] = location;
     }
 
-    if (payment_status && payment_status !== '' && payment_status !== null) {
-      filter['payment_status'] = payment_status;
+    if (category_id && category_id !== '') {
+      productFilter['category_id'] = category_id;
     }
 
+    if (tags && tags !== '') {
+      tagFilter['id'] = tags.split(',');
+    }
+    console.log(tagFilter);
     console.log(filter);
     return await this.repository.findAll<Transaction>({
       where: filter,
-      order: [['created_at', 'DESC']],
-      include: { all: true },
+      order: ordering,
+      include: [
+        {
+          model: TransactionDetail,
+          where: productDetailFilter,
+          include: [
+            {
+              model: Product,
+              where: productFilter,
+              attributes: {
+                exclude: ['created_at', 'deleted_at', 'updated_at'],
+              },
+              include: [
+                {
+                  model: ProductTag,
+                  where: tagFilter,
+                  attributes: {
+                    exclude: ['created_at', 'deleted_at', 'updated_at'],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   }
 
@@ -298,25 +334,18 @@ export class TransactionsService {
   }
 
   async findDiscountFromTransaction(discountId) {
-    return await this.repository
-      .findAll({
-        where: {
-          discount_id: discountId,
-        },
-        order: [['created_at', 'DESC']],
-        attributes: [
-          'discount_id',
-          'discount_code',
-          'discount_detail',
-          'total_discount_code',
-        ],
-      })
-      .then((result) => {
-        return result.map((e) => {
-          e.discount_detail = JSON.parse(e.discount_detail);
-          return e;
-        });
-      });
+    return await this.repository.findAll({
+      where: {
+        discount_id: discountId,
+      },
+      order: [['created_at', 'DESC']],
+      attributes: [
+        'discount_id',
+        'discount_code',
+        'discount_detail',
+        'total_discount_code',
+      ],
+    });
   }
 
   async expiredChecking() {
@@ -328,7 +357,7 @@ export class TransactionsService {
       },
       include: [
         {
-          model: TransactionProductDetail,
+          model: TransactionDetail,
           attributes: ['id', 'product_option_id', 'qty'],
         },
       ],

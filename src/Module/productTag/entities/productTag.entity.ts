@@ -10,6 +10,7 @@ import {
 
 @Table({
   tableName: 'product_tag',
+  timestamps: false,
 })
 export class ProductTag extends Model {
   @ForeignKey(() => Product)

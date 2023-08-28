@@ -12,7 +12,7 @@ import {
   ForeignKey,
   HasMany,
 } from 'sequelize-typescript';
-import { TransactionProductDetail } from './transactionProductDetail.entity';
+import { TransactionDetail } from './transactionProductDetail.entity';
 
 @Table({
   tableName: 'transaction',
@@ -37,6 +37,10 @@ export class Transaction extends Model {
 
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'ORDER' })
   type: string;
+
+  // Location only between HK or CN (China)
+  @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'HK' })
+  location: string;
 
   @Column({ allowNull: true, type: DataType.STRING })
   order_number: string;
@@ -86,35 +90,20 @@ export class Transaction extends Model {
   @Column({ allowNull: true, type: DataType.TEXT })
   delivery_remark: string;
 
-  @Column({ allowNull: true, type: DataType.TEXT })
-  delivery_message: string;
-
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'PENDING' })
   delivery_status: string;
 
-  @Column({ allowNull: true, type: DataType.INTEGER })
-  discount_id: number;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  discount_code: string;
-
-  @Column({ allowNull: true, type: DataType.TEXT })
-  discount_detail: string;
-
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  total_discount_code: number;
+  discount: number;
 
   @Column({ allowNull: true, type: DataType.STRING, defaultValue: 'PENDING' })
   status: string;
 
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  subtotal_product: number;
+  subtotal: number;
 
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  subtotal_event: number;
-
-  @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
-  total_discount: number;
+  disc: number;
 
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
   total_delivery: number;
@@ -122,11 +111,8 @@ export class Transaction extends Model {
   @Column({ allowNull: true, type: DataType.DECIMAL(25, 2), defaultValue: 0 })
   total: number;
 
-  @Column({ allowNull: true, type: DataType.INTEGER, defaultValue: 0 })
-  points: number;
-
-  @HasMany(() => TransactionProductDetail)
-  products: TransactionProductDetail[];
+  @HasMany(() => TransactionDetail)
+  products: TransactionDetail[];
 
   @CreatedAt
   created_at: Date;

@@ -14,7 +14,7 @@ import { Content } from '@/Module/content/entities/content.entity';
 import { DeliveryFreeSetup } from '@/Module/deliveries/entities/deliveryFreeSetup.entity';
 import { Discount } from '@/Module/discounts/entities/discount.entity';
 import { Transaction } from '@/Module/transaction/entities/transaction.entity';
-import { TransactionProductDetail } from '@/Module/transaction/entities/transactionProductDetail.entity';
+import { TransactionDetail } from '@/Module/transaction/entities/transactionProductDetail.entity';
 
 import { ProductOption } from '@/Module/product/entities/productOption.entity';
 import { ProductMedia } from '@/Module/product/entities/productMedia.entity';
@@ -63,7 +63,7 @@ export const databaseProviders = [
         ProductCollection,
         ProductWishlist,
         Transaction,
-        TransactionProductDetail,
+        TransactionDetail,
         TransactionLog,
         Notifications,
       ]);

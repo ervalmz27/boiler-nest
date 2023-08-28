@@ -21,7 +21,7 @@ import {
 import { Transaction } from './entities/transaction.entity';
 import { ProductOption } from '../product/entities/productOption.entity';
 import { Product } from '../product/entities/product.entity';
-import { TransactionProductDetail } from './entities/transactionProductDetail.entity';
+import { TransactionDetail } from './entities/transactionProductDetail.entity';
 import { Customer } from '../customer/entities/customer.entity';
 import { Delivery } from '../deliveries/entities/delivery.entity';
 import { Discount } from '../discounts/entities/discount.entity';
@@ -48,7 +48,7 @@ export const TransactionsProvider = [
   },
   {
     provide: TRANSACTION_PRODUCT_DETAIL_PROVIDER,
-    useValue: TransactionProductDetail,
+    useValue: TransactionDetail,
   },
   {
     provide: MEMBER_PROVIDER,

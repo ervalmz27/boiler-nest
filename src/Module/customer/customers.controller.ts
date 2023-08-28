@@ -22,7 +22,7 @@ import { CustomersService } from './customers.service';
 import Helpers from '@/Helpers/helpers';
 import { RESPONSES } from '@/Helpers/contants';
 import SpaceFile from '@/Helpers/files';
-import { TransactionsService } from '../transaction/transactions.service';
+import { TransactionsService } from '../transaction/services/transactions.service';
 
 @Controller('customers')
 export class CustomersController {

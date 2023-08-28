@@ -19,7 +19,7 @@ const CryptoJS = require('crypto-js');
 import * as moment from 'moment-timezone';
 
 import { OnlinePaymentsService } from './onlinePayments.service';
-import { TransactionsService } from '../transaction/transactions.service';
+import { TransactionsService } from '../transaction/services/transactions.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import PaymeUtils from '@/Helpers/paymeUtils';
 import { API_BASEURL, PAYME_URL } from '@/Config/url.config';

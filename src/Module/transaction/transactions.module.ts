@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './services/transactions.service';
 import { TransactionsProvider } from './transactions.providers';
 import { TransactionsController } from './transactions.controller';
 import { ProductsService } from '../product/products.service';
 import { ProductOptionsService } from '../product/productOptions.service';
-import { TransactionProductDetailsService } from './transactionProductDetail.service';
+import { TransactionProductDetailsService } from './services/transactionProductDetail.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '@/Helpers/contants';
 import { CustomersService } from '../customer/customers.service';

@@ -14,19 +14,17 @@ import {
 } from '@nestjs/common';
 import Helpers from '@/Helpers/helpers';
 
-import { RESPONSES } from '@/Helpers/contants';
 import {
   ORDER_STATUS,
   PAYMENT_STATUS,
   DELIVERY_STATUS,
 } from '@/Helpers/contants/status';
 import { ProductOptionsService } from '../product/productOptions.service';
-import { TransactionProductDetailsService } from './transactionProductDetail.service';
-import { TransactionsService } from './transactions.service';
+import { TransactionProductDetailsService } from './services/transactionProductDetail.service';
+import { TransactionsService } from './services/transactions.service';
 
 import { XAuthGuards } from '../auth/xauth.guard';
 import { TransactionLogServices } from './services/transactionLog.service';
-// import { TEMPLATE_ID } from '@/Helpers/contants/sengridtemplate';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -40,12 +38,8 @@ export class TransactionsController {
 
   @Get()
   async findAll(@Res() res, @Req() req) {
-    const payload = req.query;
-
-    const data = await this.service.findAll(payload);
-
+    const data = await this.service.findAll(req.query);
     if (data === null) return res.status(404).json({ data });
-
     return res.status(200).json({ data });
   }
 
