@@ -71,8 +71,6 @@ export class ProductsController {
 
   @Post()
   async create(@Body() payload: any, @Res() res) {
-    console.log("payload", payload);
-
     const data = await this.service.create(payload);
 
     await this.optionService.bulkCreate(data.id, payload.options);
