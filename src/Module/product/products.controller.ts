@@ -10,6 +10,8 @@ import {
   Put,
   Req,
   Logger,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 
 import Helpers from '@/Helpers/helpers';
@@ -21,6 +23,8 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
 import { ProductTagService } from '../productTag/productTag.service';
 import { ProductWishlistService } from './services/productWishlist.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import SpaceFile from '@/Helpers/files';
 
 @Controller('products')
 export class ProductsController {
@@ -30,8 +34,10 @@ export class ProductsController {
     private readonly service: ProductsService,
     private readonly optionService: ProductOptionsService,
     private readonly tagService: ProductTagService,
+    private readonly mediaService: ProductMediasService,
+    private readonly spaceFile: SpaceFile,
     private readonly wishlistService: ProductWishlistService,
-  ) {}
+  ) { }
 
   @Get()
   async findAll(@Res() res, @Req() req) {
@@ -63,14 +69,15 @@ export class ProductsController {
     return res.status(200).json({ data, message: 'Data found' });
   }
 
-  //
   @Post()
   async create(@Body() payload: any, @Res() res) {
+    console.log("payload", payload);
+
     const data = await this.service.create(payload);
 
     await this.optionService.bulkCreate(data.id, payload.options);
     await this.tagService.bulkCreate(data.id, payload.tags);
-
+    await this.mediaService.bulkCreate(data.id, payload.images)
     return res.status(200).json({ data, message: 'Data Created' });
   }
 
@@ -172,5 +179,15 @@ export class ProductsController {
       customer_id,
     );
     return res.status(200).json({ data });
+  }
+  @Post('imageUpload')
+  @UseInterceptors(FileInterceptor('photos'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return this.spaceFile.uploadObject(file.buffer, file.originalname,)
+  }
+  @Post('videoUpload')
+  @UseInterceptors(FileInterceptor('video'))
+  uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    return this.spaceFile.uploadObject(file.buffer, file.originalname)
   }
 }

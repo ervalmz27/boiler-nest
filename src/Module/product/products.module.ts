@@ -7,6 +7,7 @@ import { ProductMediasService } from './productMedias.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
 import { ProductTagService } from '../productTag/productTag.service';
 import { ProductWishlistService } from './services/productWishlist.service';
+import SpaceFile from '@/Helpers/files';
 
 @Module({
   controllers: [ProductsController],
@@ -14,10 +15,11 @@ import { ProductWishlistService } from './services/productWishlist.service';
     ProductsService,
     ProductOptionsService,
     ProductMediasService,
+    SpaceFile,
     ProductCategoriesService,
     ProductTagService,
     ProductWishlistService,
     ...ProductsProvider,
   ],
 })
-export class ProductsModule {}
+export class ProductsModule { }

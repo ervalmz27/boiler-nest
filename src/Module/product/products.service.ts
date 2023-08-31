@@ -19,7 +19,7 @@ export class ProductsService {
   constructor(
     @Inject(PRODUCT_PROVIDER)
     private readonly repository: typeof Product,
-  ) {}
+  ) { }
 
   async findAll(payload): Promise<Product[]> {
     const { q, status, is_published } = payload;

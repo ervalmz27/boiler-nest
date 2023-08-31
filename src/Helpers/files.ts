@@ -44,7 +44,6 @@ export default class SpaceFile {
       params['ContentType'] = contentType;
     }
     const data = s3.upload(params).promise();
-
     return data
       .then((result) => {
         return result;
