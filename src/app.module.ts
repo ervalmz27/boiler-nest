@@ -28,6 +28,10 @@ import { InternalServerErrorFilter } from './InternalServerErrorFilter';
 import { ProductTagModule } from './Module/productTag/productTag.module';
 import { NewsModule } from './Module/news/news.module';
 import { BannerImagesModule } from './Module/bannerImage/bannerImages.module';
+import { TemplateModule } from './Module/template/template.module';
+
+
+
 
 @Module({
   imports: [
@@ -73,6 +77,7 @@ import { BannerImagesModule } from './Module/bannerImage/bannerImages.module';
     NotificationsModule,
     AuthModule,
     ImportModule,
+    TemplateModule,
   ],
   controllers: [AppController],
   providers: [

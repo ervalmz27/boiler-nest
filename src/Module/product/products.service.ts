@@ -169,6 +169,7 @@ export class ProductsService {
   }
 
   async uploadFiles(files: any) {
+
     const urls = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -186,6 +187,7 @@ export class ProductsService {
     }
     return urls;
   }
+
 
   async findProductStockLimit() {
     return this.repository.findAll({

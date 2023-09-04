@@ -25,6 +25,7 @@ import { ProductTagService } from '../productTag/productTag.service';
 import { ProductWishlistService } from './services/productWishlist.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import SpaceFile from '@/Helpers/files';
+import { v1 as uuidv1 } from 'uuid';
 
 @Controller('products')
 export class ProductsController {
@@ -181,11 +182,16 @@ export class ProductsController {
   @Post('imageUpload')
   @UseInterceptors(FileInterceptor('photos'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this.spaceFile.uploadObject(file.buffer, file.originalname,)
+    return this.service.uploadFiles(file)
+
   }
   @Post('videoUpload')
   @UseInterceptors(FileInterceptor('video'))
-  uploadVideo(@UploadedFile() file: Express.Multer.File) {
-    return this.spaceFile.uploadObject(file.buffer, file.originalname)
+  async uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    const fileName = uuidv1() + '.' + file.originalname.split('.').pop();
+    const result: any = await this.spaceFile.uploadObject(file.buffer, fileName)
+    const { Location } = result
+    return Location
   }
+
 }
