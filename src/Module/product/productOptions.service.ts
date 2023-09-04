@@ -12,7 +12,7 @@ export class ProductOptionsService {
   constructor(
     @Inject(PRODUCT_OPTION_PROVIDER)
     private readonly repository: typeof ProductOption,
-  ) {}
+  ) { }
 
   async findOne(where = {}) {
     return this.repository.findOne({
@@ -131,6 +131,16 @@ export class ProductOptionsService {
       },
     );
   }
+  async importUpdate(payload) {
+    for (const option of payload) {
+      await this.repository.update(option, {
+        where: {
+          sku_no: option.sku_no,
+        },
+      });
+    }
+  }
+
 
   async updateById(id, payload) {
     return this.repository.update(payload, { where: { id } });
@@ -208,5 +218,17 @@ export class ProductOptionsService {
       },
       include: [{ model: Product }],
     });
+  }
+  async findBySku(sku_no) {
+    const options = await this.repository.findOne({
+      where: {
+        sku_no,
+      },
+    });
+
+    if (options === null) {
+      return true;
+    }
+    return false;
   }
 }

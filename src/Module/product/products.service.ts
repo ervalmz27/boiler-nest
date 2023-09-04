@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   PRODUCT_PROVIDER,
-  PRODUCT_WISHLIST_PROVIDER,
+  PRODUCTCATEGORY_PROVIDER,
+  PRODUCT_OPTION_PROVIDER
 } from '@/Helpers/contants';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
@@ -19,6 +20,8 @@ export class ProductsService {
   constructor(
     @Inject(PRODUCT_PROVIDER)
     private readonly repository: typeof Product,
+    @Inject(PRODUCTCATEGORY_PROVIDER)
+    private readonly categoryRepository: typeof ProductCategory,
   ) { }
 
   async findAll(payload): Promise<Product[]> {
@@ -213,7 +216,50 @@ export class ProductsService {
   async import(payload: any) {
     return await this.repository.bulkCreate(payload);
   }
+  async generateUpdate(payload) {
+    for (const product of payload) {
+      await this.repository.update(payload, {
+        where: {
+          name: product.name,
+        },
+      });
+    }
+  }
 
+  async getIdByName(name) {
+    return await this.repository.findOne({
+      where: {
+        name,
+      },
+      attributes: ['id'],
+    });
+  }
+  async findOrCreateCategoryByName(name) {
+    const data = await this.categoryRepository.findOne({
+      where: { name },
+      raw: true,
+    });
+    if (data === null) {
+      const newCategory = await this.categoryRepository.create({
+        name: name,
+      });
+      return newCategory.id;
+    }
+    return data.id;
+  }
+  async isExists(name) {
+    const data = await this.repository.findOne({
+      where: {
+        name,
+      },
+      raw: true,
+    });
+
+    if (data === null) {
+      return false;
+    }
+    return true;
+  }
   async updateBySku(payload: any) {
     return await this.repository.update(payload, {
       where: {

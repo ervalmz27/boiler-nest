@@ -13,6 +13,7 @@ import SpaceFile from '@/Helpers/files';
   controllers: [ProductsController],
   providers: [
     ProductsService,
+
     ProductOptionsService,
     ProductMediasService,
     SpaceFile,

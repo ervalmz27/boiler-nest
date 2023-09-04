@@ -8,7 +8,7 @@ import {
   CUSTOMER_PROVIDER,
   NOTIFICATION_PROVIDER,
   PAYMENT_PROVIDER,
-  POINTLOG_PROVIDER,
+  PRODUCTCATEGORY_PROVIDER,
   PRODUCT_OPTION_PROVIDER,
   PRODUCT_PROVIDER,
   TRANSACTION_EVENT_PROVIDER,
@@ -30,6 +30,7 @@ import { Payment } from '../payments/entities/payment.entity';
 import { Notifications } from '../notifications/entities/notifications.entity';
 import { TransactionLog } from './entities/transactionPaymentLog.entity';
 import { CustomerBank } from '../customer/entities/customerBank entity';
+import { ProductCategory } from '../productCategory/entities/productCategory.entity';
 
 export const TransactionsProvider = [
   {
@@ -81,5 +82,9 @@ export const TransactionsProvider = [
   {
     provide: CUSTOMER_BANK_PROVIDER,
     useValue: CustomerBank,
+  },
+  {
+    provide: PRODUCTCATEGORY_PROVIDER,
+    useValue: ProductCategory,
   },
 ];

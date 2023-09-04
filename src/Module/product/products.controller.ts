@@ -26,7 +26,7 @@ import { ProductWishlistService } from './services/productWishlist.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import SpaceFile from '@/Helpers/files';
 import { v1 as uuidv1 } from 'uuid';
-
+const xlsx = require('xlsx');
 @Controller('products')
 export class ProductsController {
   private readonly helpers = new Helpers();
@@ -193,5 +193,96 @@ export class ProductsController {
     const { Location } = result
     return Location
   }
+  @Post('import')
+  @UseInterceptors(FileInterceptor('doc'))
+  async import(@Res() res, @UploadedFile() file: Express.Multer.File) {
+    const { buffer } = file;
+    const workbook = xlsx.read(buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0]; // Assuming you want to convert the first sheet
+    const optionSheetName = workbook.SheetNames[1]; // Assuming you want to convert the first sheet
 
+    const worksheet = workbook.Sheets[sheetName];
+    const worksheet2 = workbook.Sheets[optionSheetName];
+
+    const jsonData = xlsx.utils.sheet_to_json(worksheet, {
+      raw: true,
+      cellText: false,
+    });
+
+    const jsonDataOpt = xlsx.utils.sheet_to_json(worksheet2, {
+      raw: true,
+      cellText: false,
+    });
+
+    const newProductArray = [];
+    const existingProduct = [];
+
+    //  Handle Product data
+    for (let index = 0; index < jsonData.length; index++) {
+      const product = jsonData[index];
+      const isProductExists = await this.service.isExists(product['Name']);
+
+      const payload = {
+        name: product['Name'],
+        category_id: await this.service.findOrCreateCategoryByName(
+          product['Category'],
+        ),
+        description: product['Description'],
+        terms: product['Term and Condition'],
+        origins: product['Origins'],
+        stock_limit: product['Stock Limit'],
+        refund_policy: product['Refund Policy'],
+        link: product['Link'],
+        is_exists: true,
+      };
+      if (isProductExists) {
+        newProductArray.push(payload);
+      } else {
+        existingProduct.push(payload);
+      }
+    }
+
+    await this.service.import(newProductArray);
+    await this.service.generateUpdate(existingProduct);
+
+    //  Handle Product Options
+    const newOptions = [];
+    const existingOptions = [];
+    for (let index = 0; index < jsonDataOpt.length; index++) {
+      const option = jsonDataOpt[index];
+      const optionExists = await this.optionService.findBySku(option['SKU No']);
+      const product = await this.service.getIdByName(option['Product Name']);
+
+      if (product !== null) {
+        const payload = {
+          product_id: product?.id || null,
+          name: option['Option Name'] || ' ',
+          sku_no: option['SKU No'] ? option['SKU No'] + '' : null,
+          quantity: option['Stock'] || 0,
+          list_price: option['List Price'] || 0,
+          selling_price: option['Selling Price'] || 0,
+          weight: option['Weight'] || '1',
+          weight_unit: option['Weight Unit']
+            ? option['Weight Unit'].toUpperCase()
+            : 'KG',
+          status: 1,
+        };
+        if (optionExists) {
+          newOptions.push(payload);
+        } else {
+          existingOptions.push(payload);
+        }
+      }
+    }
+
+    await this.optionService.import(newOptions);
+    await this.optionService.importUpdate(existingOptions);
+    return res.json({
+      data: newProductArray,
+      options: {
+        new: newOptions,
+        exist: existingOptions,
+      },
+    });
+  }
 }

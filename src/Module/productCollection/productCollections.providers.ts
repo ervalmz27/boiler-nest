@@ -4,12 +4,14 @@ import {
   PRODUCT_PROVIDER,
   PRODUCT_TAG_PROVIDER,
   PRODUCT_WISHLIST_PROVIDER,
+  PRODUCTCATEGORY_PROVIDER
 } from '@/Helpers/contants';
 import { ProductCollection } from './entities/productCollection.entity';
 import { ProductCollectionItem } from './entities/productCollectionItem.entity';
 import { Product } from '../product/entities/product.entity';
 import { ProductTag } from '../productTag/entities/productTag.entity';
 import { ProductWishlist } from '../product/entities/productWishlist.entity';
+import { ProductCategory } from '../productCategory/entities/productCategory.entity';
 
 export const ProductCollectionsProvider = [
   {
@@ -31,5 +33,9 @@ export const ProductCollectionsProvider = [
   {
     provide: PRODUCT_WISHLIST_PROVIDER,
     useValue: ProductWishlist,
+  },
+  {
+    provide: PRODUCTCATEGORY_PROVIDER,
+    useValue: ProductCategory,
   },
 ];
