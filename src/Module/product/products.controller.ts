@@ -12,6 +12,7 @@ import {
   Logger,
   UseInterceptors,
   UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 
 import Helpers from '@/Helpers/helpers';
@@ -23,7 +24,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { ProductCategoriesService } from '../productCategory/productCategories.service';
 import { ProductTagService } from '../productTag/productTag.service';
 import { ProductWishlistService } from './services/productWishlist.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import SpaceFile from '@/Helpers/files';
 import { v1 as uuidv1 } from 'uuid';
 const xlsx = require('xlsx');
@@ -180,10 +181,9 @@ export class ProductsController {
     return res.status(200).json({ data });
   }
   @Post('imageUpload')
-  @UseInterceptors(FileInterceptor('photos'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this.service.uploadFiles(file)
-
+  @UseInterceptors(FilesInterceptor('photos'))
+  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+    return this.service.uploadFiles(files)
   }
   @Post('videoUpload')
   @UseInterceptors(FileInterceptor('video'))

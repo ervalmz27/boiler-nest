@@ -15,13 +15,13 @@ export class TransactionsService {
   constructor(
     @Inject(TRANSACTION_PROVIDER)
     private readonly repository: typeof Transaction,
-  ) {}
+  ) { }
 
   async findAll(payload: any) {
     const { q, category_id, tags, location, sort } = payload;
 
-    const filter = {};
-    let tagFilter = {};
+    const filter = null;
+    let tagFilter = null;
     const productFilter = {};
     const productDetailFilter = {};
     let ordering = [];
@@ -49,8 +49,8 @@ export class TransactionsService {
     if (tags && tags !== '') {
       tagFilter['id'] = tags.split(',');
     }
-    console.log(tagFilter);
-    console.log(filter);
+    console.log("hello", tagFilter);
+    console.log("filter", filter);
     return await this.repository.findAll<Transaction>({
       where: filter,
       order: ordering,

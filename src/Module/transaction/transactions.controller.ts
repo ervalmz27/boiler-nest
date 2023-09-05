@@ -34,7 +34,7 @@ export class TransactionsController {
     private readonly logService: TransactionLogServices,
     private readonly productOptionService: ProductOptionsService,
     private readonly trxProductDetailService: TransactionProductDetailsService,
-  ) {}
+  ) { }
 
   @Get()
   async findAll(@Res() res, @Req() req) {
@@ -341,7 +341,7 @@ export class TransactionsController {
       id,
       'delivery',
       'Transaction Initiated, DELIVERY status set to ' +
-        DELIVERY_STATUS.PENDING,
+      DELIVERY_STATUS.PENDING,
     );
   }
 
