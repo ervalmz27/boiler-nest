@@ -66,6 +66,8 @@ export class ProductsController {
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res) {
     const data = await this.service.findOne(+id);
+    const counts = await this.service.count(+id);
+    data.dataValues.Inventory_ordered = counts
     if (data === null)
       return res.status(404).json({ data, message: 'Data not found' });
     return res.status(200).json({ data, message: 'Data found' });

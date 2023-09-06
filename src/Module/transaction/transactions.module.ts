@@ -36,4 +36,4 @@ import { TransactionLogServices } from './services/transactionLog.service';
     ...TransactionsProvider,
   ],
 })
-export class TransactionsModule {}
+export class TransactionsModule { }

@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   PRODUCT_PROVIDER,
   PRODUCTCATEGORY_PROVIDER,
-  PRODUCT_OPTION_PROVIDER
+  PRODUCT_OPTION_PROVIDER,
+  TRANSACTION_PRODUCT_DETAIL_PROVIDER
 } from '@/Helpers/contants';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
@@ -13,6 +14,7 @@ import { ProductOption } from './entities/productOption.entity';
 import { ProductCategory } from '../productCategory/entities/productCategory.entity';
 import { ProductTag } from '../productTag/entities/productTag.entity';
 import { ProductWishlist } from './entities/productWishlist.entity';
+import { TransactionDetail } from '../transaction/entities/transactionProductDetail.entity';
 @Injectable()
 export class ProductsService {
   private spacefile = new SpaceFile();
@@ -20,6 +22,8 @@ export class ProductsService {
   constructor(
     @Inject(PRODUCT_PROVIDER)
     private readonly repository: typeof Product,
+    @Inject(TRANSACTION_PRODUCT_DETAIL_PROVIDER)
+    private readonly repositorydetail: typeof TransactionDetail,
     @Inject(PRODUCTCATEGORY_PROVIDER)
     private readonly categoryRepository: typeof ProductCategory,
   ) { }
@@ -59,7 +63,6 @@ export class ProductsService {
   }
 
   async sortProduct(payload) {
-    console.log(payload);
     for (let index = 0; index < payload.length; index++) {
       const product = payload[index];
       await this.repository.update(
@@ -90,6 +93,14 @@ export class ProductsService {
         },
       ],
     });
+
+
+  }
+
+  async count(id: any) {
+    return await this.repositorydetail.count({
+      where: { product_id: id }
+    })
   }
 
   async findIdByName(name) {

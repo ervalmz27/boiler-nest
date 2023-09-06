@@ -7,14 +7,13 @@ export class ProductMediasService {
   constructor(
     @Inject(PRODUCT_MEDIA_PROVIDER)
     private readonly repository: typeof ProductMedia,
-  ) {}
+  ) { }
 
   async create(id, urls, type = 'image') {
     const payload = [];
     console.log(urls);
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
-      console.log(url);
       payload.push({
         product_id: id,
         type: type,
@@ -45,12 +44,17 @@ export class ProductMediasService {
   }
   async bulkCreate(productId, options) {
     let payloads = [];
-    options.forEach((e) => {
-      e.product_id = productId;
-      e.type = 'image';
-      payloads.push(e);
-      e.path = e.photo;
-    });
+    for (let i = 0; i < options.length; i++) {
+      const element = options[i];
+      const created = {
+        product_id: productId,
+        type: 'image',
+        path: element,
+      }
+      payloads.push(created);
+
+    }
+
     return await this.repository
       .bulkCreate(payloads)
       .catch((error) => console.error(error));

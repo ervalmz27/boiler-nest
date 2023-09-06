@@ -11,6 +11,7 @@ import SpaceFile from '@/Helpers/files';
 
 @Module({
   controllers: [ProductsController],
+
   providers: [
     ProductsService,
 
