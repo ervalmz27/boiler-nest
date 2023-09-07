@@ -237,7 +237,7 @@ export class ProductsController {
         link: product['Link'],
         is_exists: true,
       };
-      if (isProductExists) {
+      if (!isProductExists) {
         newProductArray.push(payload);
       } else {
         existingProduct.push(payload);
@@ -280,7 +280,7 @@ export class ProductsController {
     await this.optionService.import(newOptions);
     await this.optionService.importUpdate(existingOptions);
     return res.json({
-      data: newProductArray,
+      data: newProductArray || existingOptions,
       options: {
         new: newOptions,
         exist: existingOptions,
