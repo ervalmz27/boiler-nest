@@ -30,9 +30,6 @@ import { NewsModule } from './Module/news/news.module';
 import { BannerImagesModule } from './Module/bannerImage/bannerImages.module';
 import { TemplateModule } from './Module/template/template.module';
 
-
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({
